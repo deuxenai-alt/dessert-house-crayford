@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dessert House — Waffles · Cookie Dough · Sundaes · Crayford</title>
+<meta name="description" content="Late-night dessert house in Crayford. Waffles, hot cookie dough, sundaes, milkshakes, gelato — open daily 3pm to 11pm.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&family=Cinzel:wght@500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --surface-1:rgba(0,0,0,.5);
+    --surface-2:rgba(0,0,0,.8);
+    --text:#ffffff;
+    --muted:#a6acb8;
+    --line:rgba(255,255,255,.10);
+    --line-2:rgba(255,255,255,.18);
+    --gold:#f2cc4c;
+    --gold-soft:rgba(242,204,76,.14);
+    --gold-strong:#e9b933;
+    --on-gold:#3a2410;
+    --container:80rem;
+    --container-prose:64rem;
+    --container-narrow:42rem;
+    --r-sm:.25rem;
+    --r-md:.375rem;
+    --r-lg:.5rem;
+    --r-xl:.75rem;
+    --r-2xl:1rem;
+    --r-3xl:1.5rem;
+    --r-pill:9999px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Manrope',system-ui,sans-serif;font-size:16px;line-height:1.6;font-weight:400;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;
+  }
+  ::selection{background:var(--gold);color:var(--on-gold)}
+  h1,h2,h3,.display,.serif{font-family:'Viaoda Libre',Georgia,serif;font-weight:400;line-height:1.05;letter-spacing:-.02em}
+  .wordmark{font-family:'Cinzel',Georgia,serif;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--container);margin:0 auto;padding:0 24px}
+  @media(min-width:768px){.wrap{padding:0 32px}}
+  @media(min-width:1024px){.wrap{padding:0 40px}}
+
+  /* ====== Nav ====== */
+  nav.top{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(0,0,0,.10);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .nav-inner{
+    max-width:var(--container);margin:0 auto;padding:18px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  @media(min-width:768px){.nav-inner{padding:22px 32px}}
+  .brand{
+    font-family:'Cinzel',Georgia,serif;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    font-size:.86rem;color:var(--text);display:inline-flex;align-items:center;gap:10px;
+  }
+  .brand .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold)}
+  .nav-links{display:none;align-items:center;gap:28px;list-style:none}
+  @media(min-width:920px){.nav-links{display:flex}}
+  .nav-links a{
+    font-size:.78rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.78);
+    padding:8px 0;transition:color .25s;
+  }
+  .nav-links a:hover{color:var(--gold)}
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gold);color:var(--on-gold);
+    padding:11px 20px;border-radius:var(--r-pill);
+    font-size:.74rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    transition:background .25s,transform .25s;
+  }
+  .nav-cta:hover{background:var(--gold-strong);transform:translateY(-1px)}
+  .nav-cta svg{width:12px;height:12px}
+
+  /* ====== Reusable bits ====== */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:32px;height:1px;background:var(--gold)}
+  .pill{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border-radius:var(--r-pill);font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    padding:13px 26px;min-height:48px;transition:all .25s;cursor:pointer;border:0;
+  }
+  .pill-gold{background:var(--gold);color:var(--on-gold)}
+  .pill-gold:hover{background:var(--gold-strong);transform:translateY(-2px)}
+  .pill-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.35)}
+  .pill-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .stop-flourish::after{content:".";color:var(--gold);margin-left:.04em}
+
+  /* ====== Hero ====== */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding-top:120px;padding-bottom:80px}
+  .hero-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(60% 50% at 20% 20%, rgba(242,204,76,.10), transparent 60%),
+      radial-gradient(55% 45% at 80% 80%, rgba(160,80,30,.10), transparent 60%),
+      radial-gradient(120% 100% at 50% 50%, #0a0805 0%, #000 80%);
+  }
+  #drizzleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.95}
+  .hero-vignette{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      radial-gradient(70% 35% at 50% 0%, rgba(0,0,0,.55), transparent 60%),
+      radial-gradient(70% 35% at 50% 100%, rgba(0,0,0,.85), transparent 65%);
+  }
+  .hero-inner{
+    position:relative;z-index:3;max-width:var(--container-prose);margin:0 auto;padding:0 24px;
+    text-align:center;
+  }
+  .hero-tag{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Manrope',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    border:1px solid var(--line-2);border-radius:var(--r-pill);padding:8px 18px;margin-bottom:32px;
+    background:rgba(0,0,0,.4);backdrop-filter:blur(6px);
+  }
+  .hero-tag .pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.9)}}
+  .hero h1{
+    font-size:clamp(2.6rem,7.4vw,5.6rem);color:var(--text);
+    margin-bottom:24px;letter-spacing:-.022em;
+  }
+  .hero h1 em{font-style:italic;color:var(--gold);font-weight:400}
+  .hero-sub{
+    max-width:46ch;margin:0 auto 38px;
+    color:var(--muted);font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.6;
+  }
+  .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .hero-meta{
+    margin-top:54px;display:flex;gap:36px;justify-content:center;flex-wrap:wrap;
+    color:var(--muted);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+  }
+  .hero-meta b{color:var(--text);font-weight:600}
+  .hero-meta span{display:inline-flex;align-items:center;gap:8px}
+  .hero-meta span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+  /* ====== Section scaffolding ====== */
+  section.zone{position:relative}
+  .zone-blur{background:rgba(0,0,0,.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+  .zone-solid{background:#000}
+  .zone-photo{background:#0a0a0a}
+  .sec-head{padding:96px 0 48px;text-align:center}
+  @media(min-width:768px){.sec-head{padding:140px 0 60px}}
+  .sec-head h2{font-size:clamp(2.2rem,5.6vw,4.2rem);margin-bottom:14px}
+  .sec-head .sec-sub{color:var(--muted);max-width:56ch;margin:14px auto 0;font-size:1rem}
+
+  /* ====== Story ====== */
+  .story-grid{
+    display:grid;grid-template-columns:1fr;gap:46px;align-items:center;
+    padding-bottom:110px;
+  }
+  @media(min-width:920px){.story-grid{grid-template-columns:1.05fr .95fr;gap:80px}}
+  .story-copy p{color:rgba(255,255,255,.78);margin-bottom:18px;font-size:1.02rem;line-height:1.75}
+  .story-copy p b{color:var(--text);font-weight:600}
+  .story-art{
+    position:relative;aspect-ratio:4/5;border-radius:var(--r-2xl);overflow:hidden;
+    border:1px solid var(--line);background:#0a0a0a;
+  }
+  .story-art .photo{
+    position:absolute;inset:-8%;
+    background:url('https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=1800&q=80') center/cover;
+    filter:brightness(.85) saturate(1.05);
+  }
+  .story-art figcaption{
+    position:absolute;left:18px;bottom:16px;z-index:2;font-size:.7rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--text);background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+    padding:8px 14px;border-radius:var(--r-pill);border:1px solid var(--line-2);
+  }
+
+  /* ====== Crowning Glory (stats) ====== */
+  .glory{padding:80px 0 110px}
+  .glory-grid{
+    display:grid;grid-template-columns:1fr;gap:28px;
+    max-width:var(--container-prose);margin:0 auto;
+  }
+  @media(min-width:760px){.glory-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
+  .glory-card{
+    text-align:center;padding:36px 22px;
+    border:1px solid var(--line);border-radius:var(--r-2xl);
+    background:rgba(255,255,255,.02);
+  }
+  .glory-num{
+    font-family:'Viaoda Libre',serif;color:var(--gold);
+    font-size:clamp(2.6rem,5.4vw,4.4rem);line-height:1;letter-spacing:-.03em;margin-bottom:10px;
+  }
+  .glory-cap{
+    font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:500;
+  }
+
+  /* ====== Featured grid ====== */
+  .featured{padding-bottom:120px}
+  .featured-grid{
+    display:grid;gap:18px;grid-template-columns:1fr;
+  }
+  @media(min-width:600px){.featured-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(min-width:980px){.featured-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
+  .fcard{
+    position:relative;overflow:hidden;
+    border:1px solid var(--line);border-radius:var(--r-2xl);
+    background:#0a0a0a;
+    aspect-ratio:4/5;display:flex;flex-direction:column;justify-content:flex-end;
+    transition:transform .35s,border-color .35s;
+  }
+  .fcard:hover{transform:translateY(-4px);border-color:rgba(242,204,76,.45)}
+  .fcard .fbg{
+    position:absolute;inset:0;background-position:center;background-size:cover;
+    transition:transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .fcard:hover .fbg{transform:scale(1.06)}
+  .fcard::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.85) 95%);
+  }
+  .fcard .frank{
+    position:absolute;top:16px;left:16px;z-index:3;
+    font-size:.66rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    background:var(--gold);color:var(--on-gold);
+    padding:6px 11px;border-radius:var(--r-pill);
+  }
+  .fcard .fbody{position:relative;z-index:2;padding:20px 22px 22px}
+  .fcard h3{
+    font-family:'Viaoda Libre',serif;font-size:1.45rem;line-height:1.15;color:var(--text);margin-bottom:8px;
+  }
+  .fcard .fprice{
+    font-family:'Manrope',sans-serif;color:var(--gold);font-weight:600;font-size:1rem;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .fcard .frate{color:var(--muted);font-size:.78rem;font-weight:500}
+
+  /* ====== Menu ====== */
+  .menu{padding-bottom:110px}
+  .cat-nav{
+    position:sticky;top:78px;z-index:50;
+    background:rgba(0,0,0,.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    margin-bottom:48px;
+  }
+  .cat-scroll{
+    display:flex;gap:8px;overflow-x:auto;padding:14px 24px;scrollbar-width:none;
+  }
+  .cat-scroll::-webkit-scrollbar{display:none}
+  .cat-chip{
+    flex:0 0 auto;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);
+    padding:9px 16px;border:1px solid var(--line);border-radius:var(--r-pill);
+    background:rgba(255,255,255,.02);cursor:pointer;transition:all .25s;white-space:nowrap;
+  }
+  .cat-chip:hover{color:var(--gold);border-color:var(--gold-soft)}
+  .cat-chip.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+
+  .cat-block{padding:46px 0 28px;scroll-margin-top:170px}
+  .cat-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+    margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--line);
+  }
+  .cat-head h3{
+    font-family:'Viaoda Libre',serif;font-size:clamp(1.8rem,3.6vw,2.6rem);color:var(--text);
+  }
+  .cat-head .count{
+    font-family:'Manrope',sans-serif;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);white-space:nowrap;
+  }
+  .items{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.items{grid-template-columns:repeat(2,1fr);gap:18px}}
+  .item{
+    display:flex;flex-direction:column;gap:8px;
+    padding:22px;border:1px solid var(--line);border-radius:var(--r-xl);
+    background:rgba(255,255,255,.015);
+    transition:all .25s;
+  }
+  .item:hover{border-color:var(--line-2);background:rgba(255,255,255,.04)}
+  .item-row{display:flex;align-items:baseline;gap:14px;justify-content:space-between}
+  .item-name{
+    font-family:'Viaoda Libre',serif;font-size:1.18rem;line-height:1.25;color:var(--text);
+    flex:1;
+  }
+  .item-price{
+    font-family:'Manrope',sans-serif;font-weight:600;color:var(--gold);font-size:.98rem;
+    white-space:nowrap;
+  }
+  .item-meta{
+    display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  }
+  .item-meta .tag{
+    padding:4px 10px;border-radius:var(--r-pill);
+    font-weight:600;font-size:.66rem;letter-spacing:.18em;
+  }
+  .item-meta .tag.new{background:var(--gold-soft);color:var(--gold);border:1px solid rgba(242,204,76,.3)}
+  .item-meta .tag.pop{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);border:1px solid var(--line-2)}
+  .item-meta .rate{color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:none;font-size:.78rem}
+  .item-desc{color:rgba(255,255,255,.65);font-size:.9rem;line-height:1.6}
+
+  /* ====== Hours / Visit ====== */
+  .strip{
+    padding:80px 24px;text-align:center;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+  }
+  .strip h2{font-size:clamp(2rem,5vw,3.4rem);margin-bottom:16px}
+  .hours{
+    margin:34px auto 0;max-width:480px;
+    display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border:1px solid var(--line);border-radius:var(--r-2xl);overflow:hidden;
+  }
+  .hours div{padding:18px 20px;text-align:left;border-bottom:1px solid var(--line)}
+  .hours div:nth-child(2n){text-align:right;color:var(--gold);font-weight:500}
+  .hours div:nth-last-child(-n+2){border-bottom:0}
+  .hours .day{color:rgba(255,255,255,.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem}
+  .hours .time{font-family:'Manrope',sans-serif;font-size:.92rem;letter-spacing:.04em}
+
+  .visit{padding:110px 0 80px;text-align:center}
+  .visit h2{font-size:clamp(2.4rem,6vw,4.2rem);margin-bottom:22px}
+  .visit p{color:var(--muted);max-width:48ch;margin:0 auto 30px}
+  .visit-grid{
+    margin-top:50px;display:grid;grid-template-columns:1fr;gap:18px;text-align:left;
+    max-width:var(--container-prose);margin-left:auto;margin-right:auto;
+  }
+  @media(min-width:760px){.visit-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
+  .vcard{
+    padding:26px;border:1px solid var(--line);border-radius:var(--r-2xl);
+    background:rgba(255,255,255,.02);
+  }
+  .vcard h4{
+    font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:14px;
+  }
+  .vcard p{color:rgba(255,255,255,.85);margin:0;font-size:.96rem;line-height:1.6}
+  .vcard a{color:rgba(255,255,255,.85);transition:color .25s}
+  .vcard a:hover{color:var(--gold)}
+
+  /* ====== Footer ====== */
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 24px;
+    background:#000;
+  }
+  .foot-inner{
+    max-width:var(--container);margin:0 auto;
+    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;
+    color:var(--muted);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .foot-inner .wordmark{color:var(--text)}
+
+  /* ====== Voucher ribbon ====== */
+  .ribbon{
+    position:relative;z-index:5;
+    margin:0 auto;max-width:var(--container);
+    padding:18px 24px;
+    display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
+    border-top:1px solid rgba(242,204,76,.25);border-bottom:1px solid rgba(242,204,76,.25);
+    background:linear-gradient(90deg, rgba(242,204,76,.04), rgba(242,204,76,.10), rgba(242,204,76,.04));
+  }
+  .ribbon b{color:var(--gold);font-family:'Viaoda Libre',serif;font-size:1.4rem;letter-spacing:-.01em}
+  .ribbon span{font-size:.82rem;letter-spacing:.1em;color:rgba(255,255,255,.85)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== NAV ====== -->
+<nav class="top">
+  <div class="nav-inner">
+    <a class="brand" href="#top"><span class="dot"></span><span>Dessert House</span></a>
+    <ul class="nav-links">
+      <li><a href="#story">Story</a></li>
+      <li><a href="#featured">Featured</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+    <a class="nav-cta" href="#menu">
+      Order
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="hero" id="top">
+  <div class="hero-bg"></div>
+  <canvas id="drizzleCanvas" aria-hidden="true"></canvas>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <span class="hero-tag"><span class="pulse"></span>Open now · 3 pm – 11 pm</span>
+    <h1>Late-night desserts,<br><em>served warm.</em></h1>
+    <p class="hero-sub">Hot cookie dough, fresh-iron waffles, scoop sundaes and thick milkshakes. Every order made to order, from a small Crayford kitchen.</p>
+    <div class="hero-actions">
+      <a class="pill pill-gold" href="#menu">See the menu</a>
+      <a class="pill pill-ghost" href="#visit">Visit us</a>
+    </div>
+    <div class="hero-meta">
+      <span><b>120+</b> menu items</span>
+      <span><b>10%</b> off £20+</span>
+      <span><b>Crayford</b>, Kent</span>
+    </div>
+  </div>
+</header>
+
+<!-- ====== Voucher ribbon ====== -->
+<div class="ribbon">
+  <b>10% off</b>
+  <span>when you spend £20 or more · use by 12 Aug 2026 · in store &amp; delivery</span>
+</div>
+
+<!-- ====== STORY ====== -->
+<section class="zone zone-blur" id="story">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Our story</p>
+      <h2><span class="stop-flourish">The dessert house</span></h2>
+      <p class="sec-sub">A small Crayford kitchen with one rule — never serve a dessert you wouldn't finish yourself.</p>
+    </div>
+
+    <div class="story-grid">
+      <div class="story-copy">
+        <p>We started with one waffle iron, one batter recipe, and the conviction that a 10pm dessert deserves the same care as a sit-down pudding. Every waffle is <b>cooked to order</b>, every cookie dough <b>baked in front of you</b>, every milkshake <b>spun by hand</b>.</p>
+        <p>The menu is long because the cravings are specific. Want a <b>warm Lotus Biscoff cookie dough with vanilla gelato</b> on a Tuesday night? You can have it. Want a <b>Ferrero Rocher waffle</b> with extra chocolate sauce? Take a seat. We're open until 11.</p>
+        <p>We're a small independent — order in store, click &amp; collect, or delivery within a short ride of Crayford.</p>
+      </div>
+      <figure class="story-art">
+        <div class="photo"></div>
+        <figcaption>The kitchen — Crayford, Kent</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CROWNING GLORY (stats) ====== -->
+<section class="zone zone-solid glory">
+  <div class="wrap">
+    <div class="sec-head" style="padding-bottom:30px">
+      <p class="eyebrow">Crowning glory</p>
+      <h2><span class="stop-flourish">By the numbers</span></h2>
+    </div>
+    <div class="glory-grid">
+      <div class="glory-card">
+        <div class="glory-num">120+</div>
+        <div class="glory-cap">Items on the menu</div>
+      </div>
+      <div class="glory-card">
+        <div class="glory-num">3 – 11</div>
+        <div class="glory-cap">Open every evening</div>
+      </div>
+      <div class="glory-card">
+        <div class="glory-num">10%</div>
+        <div class="glory-cap">Off when you spend £20+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FEATURED ====== -->
+<section class="zone zone-blur featured" id="featured">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Most liked</p>
+      <h2><span class="stop-flourish">Featured items</span></h2>
+      <p class="sec-sub">The desserts our regulars order again and again.</p>
+    </div>
+    <div class="featured-grid" id="featuredGrid"></div>
+  </div>
+</section>
+
+<!-- ====== MENU ====== -->
+<section class="zone zone-solid menu" id="menu">
+  <div class="sec-head" style="padding-bottom:36px">
+    <p class="eyebrow">The full menu</p>
+    <h2><span class="stop-flourish">Everything we serve</span></h2>
+    <p class="sec-sub">Twelve categories. Use the chips to jump.</p>
+  </div>
+
+  <div class="cat-nav">
+    <div class="wrap" style="padding:0">
+      <div class="cat-scroll" id="catScroll"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="menuRoot"></div>
+  </div>
+</section>
+
+<!-- ====== HOURS ====== -->
+<section class="strip" id="hours">
+  <p class="eyebrow" style="justify-content:center;display:inline-flex">Opening hours</p>
+  <h2><span class="stop-flourish">Open every evening</span></h2>
+  <div class="hours">
+    <div class="day">Monday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Tuesday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Wednesday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Thursday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Friday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Saturday</div><div class="time">3 pm – 11 pm</div>
+    <div class="day">Sunday</div><div class="time">3 pm – 11 pm</div>
+  </div>
+</section>
+
+<!-- ====== VISIT ====== -->
+<section class="zone zone-solid visit" id="visit">
+  <div class="wrap">
+    <p class="eyebrow" style="justify-content:center;display:inline-flex">Find us</p>
+    <h2><span class="stop-flourish">In the heart of Crayford</span></h2>
+    <p>Walk in, click &amp; collect, or order delivery. We're open every evening until 11.</p>
+
+    <div class="visit-grid">
+      <div class="vcard">
+        <h4>Address</h4>
+        <p>[ Your Street Address ]<br>Crayford, Kent<br>DA1 [postcode]</p>
+      </div>
+      <div class="vcard">
+        <h4>Contact</h4>
+        <p><a href="tel:+440000000000">+44 (0) 00 0000 0000</a><br><a href="mailto:hello@example.co.uk">hello@example.co.uk</a></p>
+      </div>
+      <div class="vcard">
+        <h4>Hours</h4>
+        <p>Every day<br>3 pm – 11 pm<br>Last orders 10:45 pm</p>
+      </div>
+    </div>
+
+    <div class="hero-actions" style="margin-top:50px;justify-content:center">
+      <a class="pill pill-gold" href="#menu">View the menu</a>
+      <a class="pill pill-ghost" href="tel:+440000000000">Call to order</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <span class="wordmark">Dessert House · Crayford</span>
+    <span>© 2026 — All rights reserved</span>
+    <span>Photography: Unsplash</span>
+  </div>
+</footer>
+
+<script>
+/* =========================
+   Menu data
+   ========================= */
+const MENU = [
+  { id:'hot-cookie-dough', title:'Hot Cookie Dough', items:[
+    { name:'Milk Chocolate Cookie Dough', price:'£7.99', rate:'76% (187)', desc:'Served with vanilla ice cream or whipped cream.' },
+    { name:'Kinder Bueno White Cookie Dough', price:'£9.85', rate:'62% (29)', desc:'Warm, gooey cookie dough topped with white pieces, drizzled with white and milk chocolate, sprinkled with shavings.' },
+    { name:'Strawberry & Cheesecake Cookie Dough', price:'£9.65', tag:'pop', desc:'Sweet strawberry and cheesecake mix in a warm cookie dough treat.' },
+    { name:'Dubai Chocolate Cookie Dough', price:'£10.25', tag:'pop', desc:'Warm cookie dough drizzled with luxury chocolate sauce, Belgian sprinkles, and pistachio kunafa.' },
+    { name:'Dubai White Chocolate Cookie Dough', price:'£10.25', desc:'Luxury white cookie dough topped with Dubai pistachio kunafa mix, white chocolate shavings and sauce.' },
+    { name:'Brownie Cookie Dough', price:'£9.65', tag:'pop', desc:'Warm, gooey brownie cookie dough — a treat for chocolate lovers.' },
+    { name:'White Chocolate Cookie Dough', price:'£7.99', rate:'86% (82)', desc:'Served with vanilla ice cream or whipped cream.' },
+    { name:'Lotus Biscoff Cookie Dough', price:'£9.75', rate:'88% (18)', desc:'Warm, gooey cookie dough infused with the distinctive flavour of Lotus Biscoff.' },
+    { name:'Ferrero Rocher Cookie Dough', price:'£9.95', rate:'63% (11)', desc:'Rich, chocolatey cookie dough with a signature hazelnut flavour.' },
+    { name:'Kinder Bueno Cookie Dough', price:'£9.85', rate:'77% (18)', desc:'Luxury milk chocolate cookie dough topped with Bueno pieces and Belgian sprinkles.' },
+    { name:'Smarties Cookie Dough', price:'£9.65', rate:'89% (49)', desc:'Served with vanilla ice cream or whipped cream.' },
+    { name:'Strawberry & Nutella Cookie Dough', price:'£9.65', rate:'80% (5)', desc:'Sweet and indulgent cookie dough with strawberries and Nutella.' },
+    { name:'Oreo Cookie Dough', price:'£9.75', rate:'66% (9)', desc:'Warm, gooey cookie dough filled with Oreo pieces.' },
+    { name:"Terry's Chocolate Orange Cookie Dough", price:'£9.65', desc:'Rich chocolatey cookie dough with a zesty orange flavour.' },
+    { name:'Galaxy Caramel Cookie Dough', price:'£9.65', rate:'71% (7)', desc:'Drizzled with caramel sauce, sprinkled with Belgian chocolate shavings, topped with caramel pieces.' },
+    { name:'Banoffee Cookie Dough', price:'£9.65', desc:'Fresh white cookie dough with sliced banana, smothered in toffee sauce, served with ice cream or cream.' },
+    { name:'Lindt Lindor Milk Cookie Dough', price:'£9.95', rate:'100% (3)', desc:'Luxury milk cookie dough topped with Lindor milk truffles, Belgian shavings and white chocolate sauce.' },
+    { name:'Milkybar Cookie Dough', price:'£9.65', rate:'66% (3)', desc:'Warm cookie dough with creamy Milkybar chunks.' },
+    { name:"Reese's Peanut-butter Cookie Dough", price:'£9.85', desc:'Rich peanut-butter cookie dough with a Reese\'s twist.' },
+    { name:'Strawberry Milk Chocolate Cookie Dough', price:'£9.65', desc:'Fresh milk chocolate cookie dough served with strawberries, Belgian shavings and milk chocolate sauce.' },
+    { name:'Strawberry Butterscotch Cookie Dough', price:'£9.75', desc:'Hot white cookie dough with fresh strawberry, butterscotch sauce and white chocolate sprinkles.' },
+    { name:'Nutella Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough with Nutella — rich chocolate-hazelnut flavour.' },
+    { name:'Milky Way Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Milky Way pieces.' },
+    { name:'Mars Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Mars bar pieces.' },
+    { name:'Snickers Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough packed with Snickers pieces.' },
+    { name:'Twix Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough packed with Twix pieces — chocolate, caramel, biscuit crunch.' },
+    { name:'Mini Eggs Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Mini Eggs.' },
+    { name:'Strawberry & Banana Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough with strawberry and banana for a fruity twist.' },
+    { name:'Chocolate Fudge Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough with a rich chocolate fudge flavour.' },
+    { name:'Crunchie Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough topped with Crunchie pieces for that honeycomb crunch.' },
+    { name:'Maltesers Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Maltesers.' },
+    { name:"Hershey's Cookie Dough", price:'£9.75', desc:'Warm, gooey cookie dough with chunks of Hershey\'s chocolate.' },
+    { name:"M&M's Peanut Cookie Dough", price:'£9.75', desc:'Cookie dough packed with peanut M&M pieces — crunchy chocolate-and-peanut.' },
+    { name:'Daim Bar Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Daim bar pieces.' },
+    { name:'Luxury Dubai Cookie Dough', price:'£10.75', desc:'Warm, gooey cookie dough with an indulgent Dubai-inspired flavour.' },
+    { name:'Banana & Bueno Sauce Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough topped with banana and drizzled with Bueno sauce.' },
+    { name:'Dubai Bueno Kunafa Cookie Dough', price:'£11.25', desc:'Warm, gooey cookie dough topped with Bueno pieces and Dubai kunafa.' },
+  ]},
+  { id:'american-waffles', title:'American Waffles', items:[
+    { name:'Create Your Own Waffle', price:'£6.75', tag:'pop', desc:'Build your own waffle with your choice of toppings.' },
+    { name:'Kinder Bueno (White) Waffle', price:'£10.45', tag:'pop', desc:'Fresh waffle with white Bueno pieces, white and milk chocolate shavings, rich white chocolate sauce.' },
+    { name:'Chocolate Brownie Waffle', price:'£9.95', rate:'93% (120)', desc:'Crushed chocolate brownie drizzled with rich chocolate sauce.' },
+    { name:'Lotus Biscoff Waffle', price:'£9.95', rate:'90% (99)', desc:'Crushed Biscoff biscuits topped with luxury Biscoff sauce.' },
+    { name:'Kinder Bueno Waffle', price:'£10.45', tag:'pop', desc:'Bueno pieces with milk and white chocolate sprinkles, white chocolate sauce.' },
+    { name:'Ferrero Rocher Waffle', price:'£10.95', rate:'91% (78)', desc:'Topped with nuts, drizzled with milk and white chocolate sauce, Ferrero pieces.' },
+    { name:'Banoffee Pie Waffle', price:'£9.89', desc:'Freshly sliced banana smothered in rich toffee sauce.' },
+    { name:'Strawberry Butterscotch Waffle', price:'£9.95', desc:'Freshly sliced strawberry with white chocolate flakes and rich butterscotch sauce.' },
+    { name:'Dubai Chocolate Waffle', price:'£11.50', tag:'pop', desc:'Pistachio butter, kunafa, milk chocolate sprinkles and rich milk chocolate sauce.' },
+    { name:'Dubai White Chocolate Waffle', price:'£11.50', desc:'Pistachio butter, kunafa, white chocolate sprinkles and white chocolate sauce.' },
+    { name:'Dubai Bueno Kunafa Waffle', price:'£12.50', tag:'new', desc:'Real Dubai kunafa mix, Belgian chocolate sprinkles, luxury milk chocolate sauce and Bueno sauce.' },
+    { name:'Luxury Dubai Waffle', price:'£12.50', tag:'new', desc:'Real Dubai kunafa mix, Belgian milk chocolate sprinkles, milk chocolate sauce and pistachio sauce.' },
+    { name:'Strawberry & Banana Waffle', price:'£9.95', tag:'pop', desc:'Banana and strawberry with luxury milk chocolate sauce.' },
+    { name:'Nutella Spread Waffle', price:'£9.65', desc:'Spread with Nutella and a topping of your choice.' },
+    { name:'Strawberry Cheesecake Waffle', price:'£9.95', desc:'Freshly sliced strawberry, crushed digestives, white chocolate flakes and white chocolate sauce.' },
+    { name:'Maltesers Waffle', price:'£10.25', desc:'Maltesers, chocolate shavings and rich milk chocolate sauce.' },
+    { name:'White Chocolate Mountain Waffle', price:'£9.45', desc:'Layer of white chocolate spread, white chocolate pieces, and white chocolate sauce.' },
+    { name:'Galaxy Caramel Waffle', price:'£9.95', rate:'94% (19)', desc:'Galaxy caramel pieces, chocolate sprinkles and rich caramel sauce.' },
+    { name:"Reese's Waffle", price:'£10.55', rate:'93% (30)', desc:'Spread with peanut butter, topped with Reese\'s and chocolate sprinkles, rich chocolate sauce.' },
+    { name:'Milkybar Waffle', price:'£9.89', rate:'92% (25)', desc:'Milkybar pieces with white chocolate shavings and rich white chocolate sauce.' },
+    { name:'Chocolate Lover Waffle', price:'£9.45', rate:'94% (17)', desc:'Smothered in chocolate spread with milk chocolate sprinkles and rich chocolate sauce.' },
+    { name:'Chocolate Fudge Waffle', price:'£9.89', desc:'Crushed chocolate fudge drizzled with rich chocolate sauce.' },
+    { name:'Milky Way Waffle', price:'£9.95', desc:'Milky Way pieces with milk chocolate shavings and rich chocolate sauce.' },
+    { name:'White Chocolate & Raspberry Waffle', price:'£9.45', desc:'White chocolate shavings with rich raspberry sauce.' },
+    { name:"M&M's Peanut Waffle", price:'£9.95', rate:'92% (14)', desc:'Topped with peanut M&Ms, chocolate sprinkles and rich chocolate sauce.' },
+    { name:'Daim Bar Waffle', price:'£9.95', desc:'Daim bar pieces with chocolate sprinkles and rich caramel sauce.' },
+    { name:"Terry's Chocolate Orange Waffle", price:'£9.95', rate:'100% (6)', desc:'Terry\'s Chocolate Orange pieces with chocolate sprinkles and rich milk chocolate sauce.' },
+    { name:'Strawberry Drizzle Waffle', price:'£9.99', desc:'Freshly sliced strawberry with rich strawberry sauce.' },
+    { name:'Crunchie Waffle', price:'£9.89', rate:'90% (11)', desc:'Crunchie pieces with chocolate sprinkles and rich caramel sauce.' },
+    { name:'Smarties Waffle', price:'£9.89', desc:'Smarties with chocolate sprinkles and rich chocolate sauce.' },
+    { name:'Marshmallow Waffle', price:'£9.89', desc:'Marshmallow pieces with rich chocolate sauce.' },
+    { name:'Lindor Milk Waffle', price:'£10.95', desc:'Drizzled in white and milk sauce, Belgian shavings, topped with milk Lindor truffles.' },
+    { name:"Hershey's Waffle", price:'£9.95', desc:'Hershey\'s pieces with white chocolate shavings and rich white chocolate sauce.' },
+    { name:'Oreo Waffle', price:'£9.95', tag:'pop', desc:'Oreo crumbles, Belgian white sprinkles and luxury white chocolate sauce.' },
+    { name:'Strawberry Milk Chocolate Waffle', price:'£9.75', desc:'Light and fluffy waffle infused with strawberry and milk chocolate.' },
+    { name:'Mini Eggs Waffle', price:'£9.95', tag:'new', desc:'Mini Eggs, Belgian milk chocolate sprinkles and luxury milk chocolate sauce.' },
+    { name:'Banana & Bueno Sauce Waffle', price:'£9.95', tag:'new', desc:'Fresh banana and rich Bueno sauce.' },
+    { name:'Snickers Waffle', price:'£9.95', desc:'Topped with crushed Snickers pieces.' },
+    { name:'Mars Waffle', price:'£9.95', desc:'Mars bar pieces for a chocolatey caramel hit.' },
+    { name:'Twix Waffle', price:'£9.95', desc:'Twix pieces for caramel, chocolate and biscuit crunch.' },
+    { name:'Raffaello Waffle', price:'£11.25', tag:'new', desc:'Raffaello pieces, luxury milk and white chocolate sauces, Belgian sprinkles.' },
+  ]},
+  { id:'sundaes', title:'Sundaes', items:[
+    { name:'Chocolate Fudge', price:'£9.55', rate:'63% (33)', desc:'Hot chocolate fudge with cold vanilla ice cream, chocolate sprinkles and chocolate sauce.' },
+    { name:'Bubblegum Sundae', price:'£9.65', rate:'86% (46)', desc:'Bubblegum and strawberry scoops with vanilla, strawberry and bubblegum syrups, 100\'s and 1000\'s.' },
+    { name:'Mango Crave', price:'£9.55', rate:'84% (13)', desc:'Real Alfonso mango ice cream, vanilla, fruit pieces and a special mango syrup.' },
+    { name:'Dubai Kunafa Sundae', price:'£11.95', rate:'75% (4)', desc:'Luxury pistachio gelato with Dubai kunafa and chocolate sauce.' },
+    { name:'Ferrero Rocher Sundae', price:'£9.75', rate:'91% (46)', desc:'Ferrero ice cream with vanilla, milk chocolate flakes, Ferrero pieces and a luxury chocolate syrup.' },
+    { name:'Oreo Cookie Sundae', price:'£9.55', rate:'80% (42)', desc:'Glorious cookies-and-cream and vanilla with chocolate syrup, topped with crushed Oreo cookie.' },
+    { name:'Strawberry Slice Sundae', price:'£9.55', rate:'75% (20)', desc:'Strawberry and vanilla scoops with strawberry syrup on a bed of strawberry slices, whipped cream.' },
+    { name:'Very Cherry Delight', price:'£9.55', rate:'100% (33)', desc:'Cherry and vanilla scoops with whipped cream and a mouth-watering cherry syrup.' },
+    { name:'Mixed Sundae', price:'£9.95', rate:'72% (11)', desc:'Bubblegum, lemon, raspberry and mango with sprinkles, strawberry, raspberry sauce and whipped cream.' },
+  ]},
+  { id:'milkshakes', title:'Thick Milkshakes', items:[
+    { name:'Create Your Own Milkshake', price:'£4.99', rate:'74% (127)', desc:'Build your own thick milkshake with your choice of flavours and toppings.' },
+    { name:'Chocolate Bar Milkshakes', price:'£6.25', rate:'82% (264)', desc:'Rich and creamy milkshake with a decadent chocolate flavour.' },
+  ]},
+  { id:'gelatos', title:'Gelatos', items:[
+    { name:'Gelato', price:'£3.50', rate:'91% (78)', desc:'Some of our gelatos are gluten free — please ask.' },
+  ]},
+  { id:'cakes', title:'Cakes', items:[
+    { name:'Luxury Chocolate Fudge Cake', price:'£5.95', rate:'86% (69)', desc:'Rich, velvety chocolate cake smothered in decadent fudge.' },
+    { name:'Lotus Biscoff Cheesecake', price:'£6.65', rate:'92% (25)', desc:'Creamy cheesecake with the unique taste of Lotus Biscoff.' },
+    { name:'Dubai Kunafa Cake', price:'£7.75', rate:'100% (4)', desc:'Real Dubai mix, luxury milk chocolate sauce, pistachio sauce and Belgian chocolate shavings.' },
+  ]},
+  { id:'drinks', title:'Drinks', items:[
+    { name:'Coke', price:'£1.49', rate:'75% (29)' },
+    { name:'Fanta', price:'£1.49', rate:'100% (8)' },
+    { name:'Diet Coke', price:'£1.49', rate:'100% (13)' },
+    { name:'Chocomel', price:'£1.79' },
+    { name:'Dr Pepper', price:'£1.49', rate:'81% (11)' },
+    { name:'7UP', price:'£1.49', rate:'66% (3)' },
+    { name:'Rio', price:'£1.49', rate:'93% (15)' },
+    { name:'Ribena', price:'£1.30', rate:'85% (7)' },
+    { name:'Water', price:'£1.20', rate:'83% (6)', desc:'Simple, refreshing water to cleanse the palate.' },
+    { name:'Fanta Orange Zero Sugar', price:'£1.39' },
+  ]},
+  { id:'american-drinks', title:'American Drinks', items:[
+    { name:'Fanta Strawberry Can 355ml', price:'£2.15', rate:'100% (7)' },
+    { name:'Fanta Grape Can 355ml', price:'£2.15' },
+    { name:'Mogu Mogu Mango 320ml', price:'£2.00' },
+    { name:'Fanta Berry Can 355ml', price:'£2.15', tag:'pop' },
+  ]},
+  { id:'slush', title:'Slush', items:[
+    { name:'Cherry Slush', price:'£3.99', tag:'pop', desc:'Fruity and refreshing slush with a sweet cherry flavour.' },
+  ]},
+  { id:'pot-of-fruits', title:'Pot of Fruits', items:[
+    { name:'Dubai Kunafa Strawberries', price:'£10.00', rate:'70% (17)', desc:'Strawberries with Dubai pistachio kunafa, luxury milk chocolate sauce and pistachio sauce.' },
+    { name:'Milk Chocolate Strawberries', price:'£6.99', rate:'70% (10)', desc:'Fresh strawberries enveloped in smooth, creamy milk chocolate.' },
+    { name:'White Chocolate Bananas', price:'£6.25', tag:'pop', desc:'Bananas smothered in rich white chocolate.' },
+    { name:'Dubai Kunafa Strawberries (White)', price:'£10.00', rate:'83% (6)', desc:'Strawberries with Dubai kunafa, luxury white chocolate sauce and pistachio sauce.' },
+    { name:'Dubai Kunafa Bananas', price:'£10.00', desc:'Bananas with Dubai kunafa, luxury milk chocolate sauce and pistachio sauce.' },
+    { name:'Dubai Kunafa Bananas (White)', price:'£10.00', desc:'Banana slices with Dubai kunafa and white chocolate sauce.' },
+    { name:'Dubai Kunafa Strawberry & Banana', price:'£10.00', desc:'Served with milk chocolate sauce and pistachio sauce.' },
+    { name:'Dubai Kunafa Strawberry & Banana (White)', price:'£10.00', desc:'Served with white chocolate sauce and pistachio sauce.' },
+    { name:'Dubai Kunafa Strawberries with Nutella', price:'£10.50', desc:'Cup of strawberries with luxury Dubai pistachio kunafa, Nutella and pistachio sauce.' },
+    { name:'White Chocolate Strawberry', price:'£6.99', desc:'Rich, creamy white chocolate paired with sweet strawberries.' },
+    { name:'Nutella Strawberry', price:'£7.25', desc:'Rich Nutella paired with sweet strawberries.' },
+    { name:'Nutella Banana', price:'£6.50', desc:'Rich banana and Nutella combination.' },
+    { name:'Nutella Strawberry & Banana', price:'£6.99', desc:'Rich, creamy Nutella with strawberries and bananas.' },
+    { name:'Strawberry & Banana Milk Chocolate', price:'£6.99', desc:'Rich and creamy milk chocolate infused with strawberry and banana.' },
+    { name:'Strawberry & Banana White Chocolate', price:'£6.99', desc:'Sweet, creamy white chocolate infused with strawberry and banana.' },
+    { name:'Milk Chocolate Bananas', price:'£6.25', desc:'Bananas smothered in rich milk chocolate.' },
+  ]},
+  { id:'bottle-drinks', title:'Bottle Drinks', items:[
+    { name:'Pepsi 1.25 litre', price:'£3.75' },
+    { name:'Tango Orange 1.5 litre', price:'£3.85', rate:'66% (3)' },
+    { name:'Pepsi Max 1.25 litre', price:'£3.75' },
+  ]},
+];
+
+/* Featured = top 15 from the supplied "most liked" list, with images from Unsplash */
+const FEATURED = [
+  { rank:1, name:'Kinder Bueno (White) Waffle', price:'£10.45', img:'https://images.unsplash.com/photo-1535920527002-b35e96722eb9?auto=format&fit=crop&w=1200&q=80' },
+  { rank:2, name:'Kinder Bueno Waffle', price:'£10.45', img:'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=1200&q=80' },
+  { rank:3, name:'Ferrero Rocher Waffle', price:'£10.95', rate:'91% (78)', img:'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=1200&q=80' },
+  { rank:4, name:'Kinder Bueno White Cookie Dough', price:'£9.85', rate:'62% (29)', img:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80' },
+  { rank:5, name:'Create Your Own Waffle', price:'£6.75', img:'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=1200&q=80' },
+  { rank:6, name:'Chocolate Brownie Waffle', price:'£9.95', rate:'93% (120)', img:'https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&w=1200&q=80' },
+  { rank:7, name:'Chocolate Fudge Sundae', price:'£9.55', rate:'63% (33)', img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80' },
+  { rank:8, name:'Lotus Biscoff Waffle', price:'£9.95', rate:'90% (99)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
+  { rank:9, name:'Luxury Dubai Waffle', price:'£12.50', img:'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=1200&q=80' },
+  { rank:10, name:'Milk Chocolate Cookie Dough', price:'£7.99', rate:'76% (187)', img:'https://images.unsplash.com/photo-1568051243851-f9b136146e97?auto=format&fit=crop&w=1200&q=80' },
+  { rank:11, name:'Lotus Biscoff Cheesecake', price:'£6.65', rate:'92% (25)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
+  { rank:12, name:'Dubai Chocolate Waffle', price:'£11.50', img:'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=1200&q=80' },
+  { rank:13, name:'Dubai Kunafa Cake', price:'£7.75', rate:'100% (4)', img:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=1200&q=80' },
+  { rank:14, name:'Luxury Chocolate Fudge Cake', price:'£5.95', rate:'86% (69)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
+  { rank:15, name:'Milk Chocolate Strawberries', price:'£6.99', rate:'70% (10)', img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80' },
+];
+
+/* ===== Render featured ===== */
+function renderFeatured(){
+  const root = document.getElementById('featuredGrid');
+  root.innerHTML = FEATURED.map(f => `
+    <a class="fcard" href="#menu">
+      <div class="fbg" style="background-image:url('${f.img}')"></div>
+      <span class="frank">#${f.rank} most liked</span>
+      <div class="fbody">
+        <h3>${f.name}</h3>
+        <div class="fprice">${f.price}${f.rate ? ` <span class="frate">· ${f.rate}</span>` : ''}</div>
+      </div>
+    </a>
+  `).join('');
+}
+
+/* ===== Render menu ===== */
+function renderMenu(){
+  const root = document.getElementById('menuRoot');
+  const chips = document.getElementById('catScroll');
+  chips.innerHTML = MENU.map((c,i)=>`<a class="cat-chip${i===0?' active':''}" href="#cat-${c.id}" data-cat="${c.id}">${c.title}</a>`).join('');
+
+  root.innerHTML = MENU.map(c => `
+    <div class="cat-block" id="cat-${c.id}">
+      <div class="cat-head">
+        <h3>${c.title}</h3>
+        <span class="count">${c.items.length} item${c.items.length===1?'':'s'}</span>
+      </div>
+      <div class="items">
+        ${c.items.map(it => `
+          <div class="item">
+            <div class="item-row">
+              <div class="item-name">${it.name}</div>
+              <div class="item-price">${it.price}</div>
+            </div>
+            ${(it.tag || it.rate) ? `<div class="item-meta">
+              ${it.tag === 'new' ? '<span class="tag new">New</span>' : ''}
+              ${it.tag === 'pop' ? '<span class="tag pop">Popular</span>' : ''}
+              ${it.rate ? `<span class="rate">★ ${it.rate}</span>` : ''}
+            </div>` : ''}
+            ${it.desc ? `<div class="item-desc">${it.desc}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  /* Active chip on scroll */
+  const blocks = MENU.map(c => document.getElementById('cat-'+c.id));
+  const chipsEls = [...chips.querySelectorAll('.cat-chip')];
+  const onScroll = () => {
+    const y = window.scrollY + 220;
+    let active = blocks[0]?.id;
+    blocks.forEach(b => { if (b && b.offsetTop <= y) active = b.id; });
+    chipsEls.forEach(ch => ch.classList.toggle('active', ch.getAttribute('href') === '#'+active));
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  /* Smooth scroll into view for chip clicks */
+  chipsEls.forEach(ch => {
+    ch.addEventListener('click', e => {
+      e.preventDefault();
+      const id = ch.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) window.scrollTo({ top: el.offsetTop - 160, behavior: 'smooth' });
+    });
+  });
+}
+
+/* ===== Hero canvas: chocolate drizzle + golden batter drops ===== */
+(function(){
+  const cv = document.getElementById('drizzleCanvas');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = matchMedia('(max-width: 760px)').matches;
+  let W=0, H=0, DPR=isMobile?1:Math.min(devicePixelRatio||1, 2);
+
+  function size(){
+    const rect = cv.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    cv.width = W*DPR; cv.height = H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  size();
+  window.addEventListener('resize', size);
+
+  /* Particles: small golden droplets that fall with gravity and form ripples at the bottom */
+  const drops = [];
+  const SPAWN_X = () => W * (0.05 + Math.random()*0.9);
+  const MAX_DROPS = isMobile ? 22 : 48;
+
+  function spawn(){
+    if (drops.length >= MAX_DROPS) return;
+    drops.push({
+      x: SPAWN_X(),
+      y: -10 - Math.random()*40,
+      vy: 0.6 + Math.random()*1.0,
+      r: 1.2 + Math.random()*2.4,
+      hue: 38 + Math.random()*12,   // amber range
+      alpha: 0.5 + Math.random()*0.35,
+      tail: 8 + Math.random()*18,
+    });
+  }
+
+  /* Ripples at the bottom */
+  const ripples = [];
+
+  function step(){
+    if (reduced){ /* draw static gradient & exit */
+      ctx.clearRect(0,0,W,H);
+      return;
+    }
+    /* Trail: gentle fade rather than full clear, leaves a soft drizzle streak */
+    ctx.fillStyle = 'rgba(0,0,0,0.18)';
+    ctx.fillRect(0,0,W,H);
+
+    /* Spawn 1-2 per frame */
+    if (Math.random() < 0.55) spawn();
+    if (Math.random() < 0.35) spawn();
+
+    for (let i = drops.length-1; i>=0; i--){
+      const d = drops[i];
+      d.vy += 0.04;
+      d.y += d.vy;
+      /* Drop core */
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      ctx.fillStyle = `hsla(${d.hue}, 88%, 62%, ${d.alpha})`;
+      ctx.fill();
+      /* Tail */
+      ctx.strokeStyle = `hsla(${d.hue}, 88%, 58%, ${d.alpha*0.45})`;
+      ctx.lineWidth = d.r * 0.75;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y - d.tail);
+      ctx.lineTo(d.x, d.y);
+      ctx.stroke();
+
+      if (d.y > H - 30 + Math.random()*20){
+        ripples.push({ x:d.x, y: H - 18, r: d.r*1.2, max: 18 + Math.random()*20, alpha: 0.55, hue: d.hue });
+        drops.splice(i,1);
+      }
+    }
+
+    for (let i = ripples.length-1; i>=0; i--){
+      const r = ripples[i];
+      r.r += 0.6;
+      r.alpha *= 0.94;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.r, 0, Math.PI*2);
+      ctx.strokeStyle = `hsla(${r.hue}, 80%, 60%, ${r.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      if (r.r > r.max || r.alpha < 0.04) ripples.splice(i,1);
+    }
+
+    requestAnimationFrame(step);
+  }
+  /* Throttle: only run when hero is in viewport */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !cv._running){ cv._running = true; requestAnimationFrame(step); }
+      else if (!e.isIntersecting){ cv._running = false; }
+    });
+  }, { threshold: 0.05 });
+  io.observe(cv);
+})();
+
+renderFeatured();
+renderMenu();
+</script>
+</body>
+</html>
