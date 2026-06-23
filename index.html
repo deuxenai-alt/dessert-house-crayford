@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Dessert House — Waffles · Cookie Dough · Sundaes · Crayford</title>
-<meta name="description" content="Late-night dessert house in Crayford. Waffles, hot cookie dough, sundaes, milkshakes, gelato — open daily 3pm to 11pm.">
+<meta name="description" content="Late-night dessert house in Crayford. Waffles, hot cookie dough, sundaes, milkshakes, gelato. Reserve a table online — open daily 3pm to 11pm.">
 <meta name="theme-color" content="#000000">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,26 +12,30 @@
 <style>
   :root{
     --bg:#000000;
-    --surface-1:rgba(0,0,0,.5);
-    --surface-2:rgba(0,0,0,.8);
+    --bg-2:#0a0805;
+    --surface:rgba(255,255,255,.025);
+    --surface-2:rgba(255,255,255,.04);
     --text:#ffffff;
     --muted:#a6acb8;
+    --muted-2:rgba(255,255,255,.65);
     --line:rgba(255,255,255,.10);
     --line-2:rgba(255,255,255,.18);
     --gold:#f2cc4c;
+    --gold-2:#e9b933;
     --gold-soft:rgba(242,204,76,.14);
-    --gold-strong:#e9b933;
-    --on-gold:#3a2410;
+    --on-gold:#241608;
+    --danger:#ff7a6b;
+    --success:#7be0a4;
     --container:80rem;
     --container-prose:64rem;
-    --container-narrow:42rem;
-    --r-sm:.25rem;
     --r-md:.375rem;
     --r-lg:.5rem;
     --r-xl:.75rem;
     --r-2xl:1rem;
     --r-3xl:1.5rem;
     --r-pill:9999px;
+    --shadow-1:0 1px 0 rgba(255,255,255,.04) inset, 0 12px 40px -8px rgba(0,0,0,.6);
+    --shadow-2:0 30px 60px -20px rgba(0,0,0,.7);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -45,163 +49,183 @@
   .wordmark{font-family:'Cinzel',Georgia,serif;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input,select,textarea{font:inherit;color:inherit}
+  *:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
   .wrap{max-width:var(--container);margin:0 auto;padding:0 24px}
   @media(min-width:768px){.wrap{padding:0 32px}}
   @media(min-width:1024px){.wrap{padding:0 40px}}
 
-  /* ====== Nav ====== */
+  /* ===================== NAV ===================== */
   nav.top{
     position:fixed;top:0;left:0;right:0;z-index:100;
-    background:rgba(0,0,0,.10);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    background:rgba(0,0,0,.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     border-bottom:1px solid rgba(255,255,255,.06);
+    transition:background .3s,border-color .3s;
   }
+  nav.top.scrolled{background:rgba(0,0,0,.78)}
   .nav-inner{
-    max-width:var(--container);margin:0 auto;padding:18px 24px;
+    max-width:var(--container);margin:0 auto;padding:16px 24px;
     display:flex;align-items:center;justify-content:space-between;gap:24px;
   }
-  @media(min-width:768px){.nav-inner{padding:22px 32px}}
-  .brand{
-    font-family:'Cinzel',Georgia,serif;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
-    font-size:.86rem;color:var(--text);display:inline-flex;align-items:center;gap:10px;
+  @media(min-width:768px){.nav-inner{padding:20px 32px}}
+  .brand{display:inline-flex;align-items:center;gap:12px;color:var(--text)}
+  .brand .mark{
+    width:36px;height:36px;border-radius:50%;
+    border:1px solid var(--gold);color:var(--gold);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;letter-spacing:.04em;
+    background:radial-gradient(circle at 30% 30%, rgba(242,204,76,.18), transparent 65%);
   }
-  .brand .dot{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold)}
-  .nav-links{display:none;align-items:center;gap:28px;list-style:none}
-  @media(min-width:920px){.nav-links{display:flex}}
+  .brand .name{
+    font-family:'Cinzel',serif;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    font-size:.84rem;line-height:1;
+  }
+  .brand .name small{display:block;font-size:.62rem;letter-spacing:.34em;color:var(--muted);margin-top:6px;font-weight:500}
+  .nav-links{display:none;align-items:center;gap:30px;list-style:none}
+  @media(min-width:960px){.nav-links{display:flex}}
   .nav-links a{
     font-size:.78rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.78);
-    padding:8px 0;transition:color .25s;
+    padding:10px 0;transition:color .25s;position:relative;
   }
   .nav-links a:hover{color:var(--gold)}
-  .nav-cta{
-    display:inline-flex;align-items:center;gap:8px;
-    background:var(--gold);color:var(--on-gold);
-    padding:11px 20px;border-radius:var(--r-pill);
-    font-size:.74rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
-    transition:background .25s,transform .25s;
+  .nav-links a::after{
+    content:"";position:absolute;left:50%;bottom:4px;width:0;height:1px;background:var(--gold);
+    transition:width .25s,left .25s;
   }
-  .nav-cta:hover{background:var(--gold-strong);transform:translateY(-1px)}
-  .nav-cta svg{width:12px;height:12px}
+  .nav-links a:hover::after{width:100%;left:0}
+  .nav-cta{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--gold);color:var(--on-gold);
+    padding:12px 22px;border-radius:var(--r-pill);
+    font-size:.74rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    transition:background .25s,transform .25s,box-shadow .25s;
+    min-height:44px;
+    box-shadow:0 8px 24px -8px rgba(242,204,76,.4);
+  }
+  .nav-cta:hover{background:var(--gold-2);transform:translateY(-1px);box-shadow:0 12px 32px -8px rgba(242,204,76,.55)}
+  .nav-cta svg{width:14px;height:14px}
 
-  /* ====== Reusable bits ====== */
+  /* ===================== REUSABLE ===================== */
   .eyebrow{
     display:inline-flex;align-items:center;gap:12px;
-    font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.34em;
-    text-transform:uppercase;color:var(--gold);margin-bottom:22px;
+    font-family:'Manrope',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--gold);margin-bottom:20px;
   }
   .eyebrow::before{content:"";width:32px;height:1px;background:var(--gold)}
+  .eyebrow.center{justify-content:center}
+  .eyebrow.center::before,.eyebrow.center::after{content:"";width:32px;height:1px;background:var(--gold)}
   .pill{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    border-radius:var(--r-pill);font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-    padding:13px 26px;min-height:48px;transition:all .25s;cursor:pointer;border:0;
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    border-radius:var(--r-pill);font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    padding:14px 28px;min-height:50px;transition:all .25s;cursor:pointer;border:0;text-decoration:none;
   }
-  .pill-gold{background:var(--gold);color:var(--on-gold)}
-  .pill-gold:hover{background:var(--gold-strong);transform:translateY(-2px)}
-  .pill-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.35)}
+  .pill-gold{background:var(--gold);color:var(--on-gold);box-shadow:0 12px 32px -10px rgba(242,204,76,.5)}
+  .pill-gold:hover{background:var(--gold-2);transform:translateY(-2px);box-shadow:0 16px 40px -10px rgba(242,204,76,.65)}
+  .pill-ghost{background:rgba(255,255,255,.04);color:var(--text);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(6px)}
   .pill-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .pill svg{width:14px;height:14px}
   .stop-flourish::after{content:".";color:var(--gold);margin-left:.04em}
 
-  /* ====== Hero ====== */
-  .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding-top:120px;padding-bottom:80px}
-  .hero-bg{
-    position:absolute;inset:0;
-    background:
-      radial-gradient(60% 50% at 20% 20%, rgba(242,204,76,.10), transparent 60%),
-      radial-gradient(55% 45% at 80% 80%, rgba(160,80,30,.10), transparent 60%),
-      radial-gradient(120% 100% at 50% 50%, #0a0805 0%, #000 80%);
+  .sec-head{padding:96px 0 48px;text-align:center}
+  @media(min-width:768px){.sec-head{padding:140px 0 60px}}
+  .sec-head h2{font-size:clamp(2.2rem,5.6vw,4.2rem);margin-bottom:16px}
+  .sec-head .sec-sub{color:var(--muted);max-width:56ch;margin:0 auto;font-size:1.02rem;line-height:1.7}
+
+  /* ===================== HERO ===================== */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding:120px 0 80px}
+  .hero-photo{
+    position:absolute;inset:-3% -3% -3% -3%;z-index:0;
+    background:url('https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=2880&q=85') center/cover no-repeat;
+    will-change:transform;
+    animation:kenburns 28s ease-in-out infinite alternate;
+    filter:brightness(.55) saturate(1.1) contrast(1.05);
   }
-  #drizzleCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;opacity:.95}
-  .hero-vignette{
-    position:absolute;inset:0;z-index:2;pointer-events:none;
+  @keyframes kenburns{
+    0%{transform:scale(1.04) translate(0,0)}
+    100%{transform:scale(1.12) translate(-1%,-1%)}
+  }
+  .hero-scrim{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
     background:
-      radial-gradient(70% 35% at 50% 0%, rgba(0,0,0,.55), transparent 60%),
-      radial-gradient(70% 35% at 50% 100%, rgba(0,0,0,.85), transparent 65%);
+      linear-gradient(180deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.35) 35%, rgba(0,0,0,.45) 65%, rgba(0,0,0,.92) 100%),
+      radial-gradient(60% 50% at 50% 65%, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 100%),
+      radial-gradient(70% 40% at 50% 0%, rgba(0,0,0,.85), transparent 50%);
+  }
+  .hero-grain{
+    position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.08;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.65'/></svg>");
   }
   .hero-inner{
     position:relative;z-index:3;max-width:var(--container-prose);margin:0 auto;padding:0 24px;
-    text-align:center;
+    text-align:center;width:100%;
   }
-  .hero-tag{
+  .hero-status{
     display:inline-flex;align-items:center;gap:10px;
-    font-family:'Manrope',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
-    color:rgba(255,255,255,.7);
-    border:1px solid var(--line-2);border-radius:var(--r-pill);padding:8px 18px;margin-bottom:32px;
-    background:rgba(0,0,0,.4);backdrop-filter:blur(6px);
+    font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+    color:rgba(255,255,255,.82);
+    border:1px solid var(--line-2);border-radius:var(--r-pill);padding:9px 18px;margin-bottom:36px;
+    background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
   }
-  .hero-tag .pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.8s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.9)}}
+  .hero-status .pulse{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);animation:pulse 1.8s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .hero h1{
-    font-size:clamp(2.6rem,7.4vw,5.6rem);color:var(--text);
-    margin-bottom:24px;letter-spacing:-.022em;
+    font-size:clamp(2.8rem,7.6vw,6rem);color:var(--text);
+    margin-bottom:22px;letter-spacing:-.022em;
+    text-shadow:0 4px 40px rgba(0,0,0,.45);
   }
   .hero h1 em{font-style:italic;color:var(--gold);font-weight:400}
   .hero-sub{
-    max-width:46ch;margin:0 auto 38px;
-    color:var(--muted);font-size:clamp(1rem,1.4vw,1.15rem);line-height:1.6;
+    max-width:44ch;margin:0 auto 40px;
+    color:rgba(255,255,255,.82);font-size:clamp(1.05rem,1.5vw,1.2rem);line-height:1.65;
+    text-shadow:0 2px 20px rgba(0,0,0,.5);
   }
   .hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .hero-meta{
-    margin-top:54px;display:flex;gap:36px;justify-content:center;flex-wrap:wrap;
-    color:var(--muted);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;
+    margin-top:60px;display:flex;gap:36px;justify-content:center;flex-wrap:wrap;
+    color:rgba(255,255,255,.7);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
   }
-  .hero-meta b{color:var(--text);font-weight:600}
-  .hero-meta span{display:inline-flex;align-items:center;gap:8px}
-  .hero-meta span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+  .hero-meta b{color:var(--gold);font-weight:600}
+  .hero-meta span{display:inline-flex;align-items:center;gap:10px}
+  .hero-meta span+span::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.4);margin-right:30px;margin-left:-32px}
 
-  /* ====== Section scaffolding ====== */
-  section.zone{position:relative}
-  .zone-blur{background:rgba(0,0,0,.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
-  .zone-solid{background:#000}
-  .zone-photo{background:#0a0a0a}
-  .sec-head{padding:96px 0 48px;text-align:center}
-  @media(min-width:768px){.sec-head{padding:140px 0 60px}}
-  .sec-head h2{font-size:clamp(2.2rem,5.6vw,4.2rem);margin-bottom:14px}
-  .sec-head .sec-sub{color:var(--muted);max-width:56ch;margin:14px auto 0;font-size:1rem}
+  .hero-scroll-cue{
+    position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:3;
+    display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.55);
+    font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;font-weight:500;
+  }
+  .hero-scroll-cue .line{width:1px;height:32px;background:linear-gradient(var(--gold),transparent);animation:drip 1.8s ease-in-out infinite}
+  @keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-  /* ====== Story ====== */
-  .story-grid{
-    display:grid;grid-template-columns:1fr;gap:46px;align-items:center;
-    padding-bottom:110px;
+  /* ===================== Voucher ribbon ===================== */
+  .ribbon{
+    position:relative;z-index:5;padding:18px 24px;
+    display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
+    border-top:1px solid rgba(242,204,76,.25);border-bottom:1px solid rgba(242,204,76,.25);
+    background:linear-gradient(90deg, rgba(242,204,76,.04), rgba(242,204,76,.12), rgba(242,204,76,.04));
   }
-  @media(min-width:920px){.story-grid{grid-template-columns:1.05fr .95fr;gap:80px}}
-  .story-copy p{color:rgba(255,255,255,.78);margin-bottom:18px;font-size:1.02rem;line-height:1.75}
-  .story-copy p b{color:var(--text);font-weight:600}
-  .story-art{
-    position:relative;aspect-ratio:4/5;border-radius:var(--r-2xl);overflow:hidden;
-    border:1px solid var(--line);background:#0a0a0a;
-  }
-  .story-art .photo{
-    position:absolute;inset:-8%;
-    background:url('https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=1800&q=80') center/cover;
-    filter:brightness(.85) saturate(1.05);
-  }
-  .story-art figcaption{
-    position:absolute;left:18px;bottom:16px;z-index:2;font-size:.7rem;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--text);background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
-    padding:8px 14px;border-radius:var(--r-pill);border:1px solid var(--line-2);
-  }
+  .ribbon b{color:var(--gold);font-family:'Viaoda Libre',serif;font-size:1.5rem;letter-spacing:-.01em}
+  .ribbon span{font-size:.78rem;letter-spacing:.14em;color:rgba(255,255,255,.82);text-transform:uppercase}
 
-  /* ====== Crowning Glory (stats) ====== */
-  .glory{padding:80px 0 110px}
-  .glory-grid{
-    display:grid;grid-template-columns:1fr;gap:28px;
-    max-width:var(--container-prose);margin:0 auto;
+  /* ===================== Promise (ethos) ===================== */
+  .promise{padding:120px 0 100px;background:linear-gradient(180deg, #000 0%, #050402 100%)}
+  .promise-grid{
+    display:grid;grid-template-columns:1fr;gap:18px;max-width:var(--container-prose);margin:0 auto;
   }
-  @media(min-width:760px){.glory-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
-  .glory-card{
-    text-align:center;padding:36px 22px;
-    border:1px solid var(--line);border-radius:var(--r-2xl);
-    background:rgba(255,255,255,.02);
+  @media(min-width:780px){.promise-grid{grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-2xl);overflow:hidden;background:rgba(255,255,255,.015)}}
+  .ethos{padding:36px 30px;text-align:center;position:relative}
+  @media(min-width:780px){.ethos+.ethos{border-left:1px solid var(--line)}}
+  .ethos .icon{
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--gold);
+    display:inline-flex;align-items:center;justify-content:center;margin-bottom:22px;
+    color:var(--gold);background:radial-gradient(circle at 30% 30%, rgba(242,204,76,.16), transparent 65%);
   }
-  .glory-num{
-    font-family:'Viaoda Libre',serif;color:var(--gold);
-    font-size:clamp(2.6rem,5.4vw,4.4rem);line-height:1;letter-spacing:-.03em;margin-bottom:10px;
-  }
-  .glory-cap{
-    font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:500;
-  }
+  .ethos .icon svg{width:24px;height:24px}
+  .ethos h3{font-family:'Viaoda Libre',serif;font-size:1.6rem;color:var(--text);margin-bottom:12px}
+  .ethos p{color:var(--muted-2);font-size:.94rem;line-height:1.7;max-width:34ch;margin:0 auto}
 
-  /* ====== Featured grid ====== */
-  .featured{padding-bottom:120px}
+  /* ===================== Featured ===================== */
+  .featured{padding-bottom:120px;background:#000}
   .featured-grid{
     display:grid;gap:18px;grid-template-columns:1fr;
   }
@@ -213,6 +237,7 @@
     background:#0a0a0a;
     aspect-ratio:4/5;display:flex;flex-direction:column;justify-content:flex-end;
     transition:transform .35s,border-color .35s;
+    text-decoration:none;
   }
   .fcard:hover{transform:translateY(-4px);border-color:rgba(242,204,76,.45)}
   .fcard .fbg{
@@ -222,17 +247,17 @@
   .fcard:hover .fbg{transform:scale(1.06)}
   .fcard::after{
     content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.85) 95%);
+    background:linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.92) 95%);
   }
   .fcard .frank{
     position:absolute;top:16px;left:16px;z-index:3;
-    font-size:.66rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+    font-size:.66rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
     background:var(--gold);color:var(--on-gold);
     padding:6px 11px;border-radius:var(--r-pill);
   }
-  .fcard .fbody{position:relative;z-index:2;padding:20px 22px 22px}
+  .fcard .fbody{position:relative;z-index:2;padding:22px 24px 24px}
   .fcard h3{
-    font-family:'Viaoda Libre',serif;font-size:1.45rem;line-height:1.15;color:var(--text);margin-bottom:8px;
+    font-family:'Viaoda Libre',serif;font-size:1.5rem;line-height:1.15;color:var(--text);margin-bottom:8px;
   }
   .fcard .fprice{
     font-family:'Manrope',sans-serif;color:var(--gold);font-weight:600;font-size:1rem;
@@ -240,11 +265,132 @@
   }
   .fcard .frate{color:var(--muted);font-size:.78rem;font-weight:500}
 
-  /* ====== Menu ====== */
-  .menu{padding-bottom:110px}
+  /* ===================== Reserve (booking) ===================== */
+  .reserve{
+    position:relative;padding:120px 0 130px;background:#050402;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .reserve-bg{
+    position:absolute;inset:0;z-index:0;overflow:hidden;
+  }
+  .reserve-bg::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(40% 30% at 12% 20%, rgba(242,204,76,.08), transparent 60%),
+      radial-gradient(35% 30% at 88% 80%, rgba(242,204,76,.05), transparent 60%);
+  }
+  .reserve-grid{
+    position:relative;z-index:1;
+    display:grid;gap:50px;align-items:stretch;grid-template-columns:1fr;
+  }
+  @media(min-width:920px){.reserve-grid{grid-template-columns:1fr 1.05fr;gap:60px}}
+  .reserve-art{
+    position:relative;border-radius:var(--r-3xl);overflow:hidden;
+    border:1px solid var(--line);min-height:480px;
+    background:#0a0a0a;
+  }
+  .reserve-art .photo{
+    position:absolute;inset:-8%;
+    background:url('https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=2000&q=85') center/cover;
+    filter:brightness(.85) saturate(1.1);
+    animation:kenburns 32s ease-in-out infinite alternate;
+  }
+  .reserve-art::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.1) 40%, rgba(0,0,0,.85) 100%);
+  }
+  .reserve-art .quote{
+    position:absolute;left:30px;right:30px;bottom:30px;z-index:2;
+    font-family:'Viaoda Libre',serif;font-style:italic;color:#fff;
+    font-size:clamp(1.1rem,2vw,1.4rem);line-height:1.4;max-width:34ch;
+    text-shadow:0 2px 20px rgba(0,0,0,.6);
+  }
+  .reserve-art .quote::before{content:"\201C";color:var(--gold);margin-right:6px;font-size:1.4em;line-height:0}
+
+  .reserve-card{
+    background:linear-gradient(160deg, rgba(20,18,14,.92), rgba(8,7,5,.95));
+    border:1px solid var(--line-2);border-radius:var(--r-3xl);
+    padding:42px 30px;backdrop-filter:blur(10px);
+    box-shadow:var(--shadow-2);
+  }
+  @media(min-width:680px){.reserve-card{padding:52px 46px}}
+  .reserve-card h2{font-size:clamp(2rem,4vw,2.8rem);margin-bottom:14px}
+  .reserve-card .lede{color:var(--muted-2);font-size:1rem;line-height:1.7;margin-bottom:30px;max-width:46ch}
+
+  .form-grid{display:grid;gap:18px;grid-template-columns:1fr}
+  @media(min-width:560px){.form-grid{grid-template-columns:1fr 1fr}}
+  .field{display:flex;flex-direction:column;gap:8px;position:relative}
+  .field.full{grid-column:1/-1}
+  .field label{
+    font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .field label .req{color:var(--gold)}
+  .field input,
+  .field select,
+  .field textarea{
+    width:100%;min-height:48px;
+    background:rgba(0,0,0,.55);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:12px 14px;font-size:.98rem;color:var(--text);
+    transition:border-color .2s,background .2s;
+    appearance:none;
+  }
+  .field textarea{min-height:88px;resize:vertical;padding-top:12px;line-height:1.5}
+  .field input::placeholder,
+  .field textarea::placeholder{color:rgba(255,255,255,.32)}
+  .field input:hover,.field select:hover,.field textarea:hover{border-color:var(--line-2)}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--gold);background:rgba(0,0,0,.7);
+    box-shadow:0 0 0 3px rgba(242,204,76,.18);
+  }
+  .field .hint{font-size:.74rem;color:var(--muted);line-height:1.5}
+  .field .err{
+    font-size:.78rem;color:var(--danger);font-weight:500;line-height:1.4;display:none;
+  }
+  .field.has-error input,.field.has-error select,.field.has-error textarea{border-color:var(--danger)}
+  .field.has-error .err{display:block}
+  .field select{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23f2cc4c' stroke-width='2'><path d='M1 1l5 5 5-5'/></svg>");
+    background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;
+  }
+  .field input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(85%) sepia(40%) saturate(700%) hue-rotate(0deg) brightness(1.05);cursor:pointer}
+
+  .form-actions{margin-top:24px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .form-actions .pill{flex:0 0 auto}
+  .submit-btn{
+    position:relative;min-width:200px;
+    background:var(--gold);color:var(--on-gold);
+  }
+  .submit-btn[disabled]{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
+  .submit-btn .spin{
+    display:none;width:14px;height:14px;border:2px solid var(--on-gold);border-right-color:transparent;border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  .submit-btn.loading .spin{display:inline-block}
+  .submit-btn.loading .label{opacity:.65}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .form-status{
+    margin-top:18px;padding:14px 16px;border-radius:var(--r-lg);font-size:.92rem;line-height:1.5;display:none;
+    border:1px solid var(--line-2);
+  }
+  .form-status.ok{display:block;background:rgba(123,224,164,.08);border-color:rgba(123,224,164,.4);color:var(--success)}
+  .form-status.err{display:block;background:rgba(255,122,107,.06);border-color:rgba(255,122,107,.35);color:var(--danger)}
+  .form-status b{font-weight:600}
+
+  .reserve-meta{
+    margin-top:30px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;gap:24px;flex-wrap:wrap;color:var(--muted-2);font-size:.86rem;
+  }
+  .reserve-meta a{color:var(--gold)}
+  .reserve-meta span{display:inline-flex;align-items:center;gap:8px}
+  .reserve-meta svg{width:14px;height:14px;color:var(--gold)}
+
+  /* ===================== Menu ===================== */
+  .menu{padding:0 0 110px;background:#000}
   .cat-nav{
-    position:sticky;top:78px;z-index:50;
-    background:rgba(0,0,0,.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    position:sticky;top:74px;z-index:50;
+    background:rgba(0,0,0,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);
     margin-bottom:48px;
   }
@@ -255,8 +401,9 @@
   .cat-chip{
     flex:0 0 auto;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     color:rgba(255,255,255,.7);
-    padding:9px 16px;border:1px solid var(--line);border-radius:var(--r-pill);
-    background:rgba(255,255,255,.02);cursor:pointer;transition:all .25s;white-space:nowrap;
+    padding:10px 18px;border:1px solid var(--line);border-radius:var(--r-pill);
+    background:rgba(255,255,255,.02);cursor:pointer;transition:all .25s;white-space:nowrap;text-decoration:none;
+    min-height:38px;display:inline-flex;align-items:center;
   }
   .cat-chip:hover{color:var(--gold);border-color:var(--gold-soft)}
   .cat-chip.active{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
@@ -270,7 +417,7 @@
     font-family:'Viaoda Libre',serif;font-size:clamp(1.8rem,3.6vw,2.6rem);color:var(--text);
   }
   .cat-head .count{
-    font-family:'Manrope',sans-serif;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;
+    font-family:'Manrope',sans-serif;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
     color:var(--muted);white-space:nowrap;
   }
   .items{display:grid;grid-template-columns:1fr;gap:14px}
@@ -281,10 +428,10 @@
     background:rgba(255,255,255,.015);
     transition:all .25s;
   }
-  .item:hover{border-color:var(--line-2);background:rgba(255,255,255,.04)}
+  .item:hover{border-color:var(--line-2);background:rgba(255,255,255,.04);transform:translateY(-2px)}
   .item-row{display:flex;align-items:baseline;gap:14px;justify-content:space-between}
   .item-name{
-    font-family:'Viaoda Libre',serif;font-size:1.18rem;line-height:1.25;color:var(--text);
+    font-family:'Viaoda Libre',serif;font-size:1.2rem;line-height:1.25;color:var(--text);
     flex:1;
   }
   .item-price{
@@ -297,55 +444,57 @@
   }
   .item-meta .tag{
     padding:4px 10px;border-radius:var(--r-pill);
-    font-weight:600;font-size:.66rem;letter-spacing:.18em;
+    font-weight:700;font-size:.64rem;letter-spacing:.22em;
   }
-  .item-meta .tag.new{background:var(--gold-soft);color:var(--gold);border:1px solid rgba(242,204,76,.3)}
-  .item-meta .tag.pop{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);border:1px solid var(--line-2)}
-  .item-meta .rate{color:var(--gold);font-weight:600;letter-spacing:.08em;text-transform:none;font-size:.78rem}
-  .item-desc{color:rgba(255,255,255,.65);font-size:.9rem;line-height:1.6}
+  .item-meta .tag.new{background:var(--gold-soft);color:var(--gold);border:1px solid rgba(242,204,76,.4)}
+  .item-meta .tag.pop{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85);border:1px solid var(--line-2)}
+  .item-meta .rate{color:var(--gold);font-weight:600;letter-spacing:.04em;text-transform:none;font-size:.78rem}
+  .item-desc{color:var(--muted-2);font-size:.9rem;line-height:1.6}
 
-  /* ====== Hours / Visit ====== */
+  /* ===================== Hours strip ===================== */
   .strip{
-    padding:80px 24px;text-align:center;
+    padding:90px 24px;text-align:center;
     border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-    background:rgba(255,255,255,.02);
+    background:linear-gradient(180deg, #050402 0%, #000 100%);
   }
   .strip h2{font-size:clamp(2rem,5vw,3.4rem);margin-bottom:16px}
   .hours{
-    margin:34px auto 0;max-width:480px;
+    margin:36px auto 0;max-width:480px;
     display:grid;grid-template-columns:1fr 1fr;gap:0;
     border:1px solid var(--line);border-radius:var(--r-2xl);overflow:hidden;
+    background:rgba(255,255,255,.015);
   }
-  .hours div{padding:18px 20px;text-align:left;border-bottom:1px solid var(--line)}
+  .hours div{padding:16px 22px;border-bottom:1px solid var(--line)}
   .hours div:nth-child(2n){text-align:right;color:var(--gold);font-weight:500}
   .hours div:nth-last-child(-n+2){border-bottom:0}
-  .hours .day{color:rgba(255,255,255,.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem}
+  .hours .day{color:rgba(255,255,255,.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;text-align:left}
   .hours .time{font-family:'Manrope',sans-serif;font-size:.92rem;letter-spacing:.04em}
 
-  .visit{padding:110px 0 80px;text-align:center}
+  /* ===================== Visit ===================== */
+  .visit{padding:110px 0 90px;text-align:center;background:#000}
   .visit h2{font-size:clamp(2.4rem,6vw,4.2rem);margin-bottom:22px}
-  .visit p{color:var(--muted);max-width:48ch;margin:0 auto 30px}
+  .visit .vintro{color:var(--muted);max-width:48ch;margin:0 auto 30px}
   .visit-grid{
     margin-top:50px;display:grid;grid-template-columns:1fr;gap:18px;text-align:left;
     max-width:var(--container-prose);margin-left:auto;margin-right:auto;
   }
   @media(min-width:760px){.visit-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
   .vcard{
-    padding:26px;border:1px solid var(--line);border-radius:var(--r-2xl);
+    padding:28px;border:1px solid var(--line);border-radius:var(--r-2xl);
     background:rgba(255,255,255,.02);
   }
   .vcard h4{
-    font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.22em;
+    font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.24em;
     text-transform:uppercase;color:var(--gold);margin-bottom:14px;
   }
-  .vcard p{color:rgba(255,255,255,.85);margin:0;font-size:.96rem;line-height:1.6}
-  .vcard a{color:rgba(255,255,255,.85);transition:color .25s}
+  .vcard p{color:rgba(255,255,255,.86);margin:0;font-size:.96rem;line-height:1.65}
+  .vcard a{color:rgba(255,255,255,.86);transition:color .25s}
   .vcard a:hover{color:var(--gold)}
 
-  /* ====== Footer ====== */
+  /* ===================== Footer ===================== */
   footer{
     border-top:1px solid var(--line);
-    padding:36px 24px;
+    padding:38px 24px;
     background:#000;
   }
   .foot-inner{
@@ -353,57 +502,52 @@
     display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center;
     color:var(--muted);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
   }
-  .foot-inner .wordmark{color:var(--text)}
-
-  /* ====== Voucher ribbon ====== */
-  .ribbon{
-    position:relative;z-index:5;
-    margin:0 auto;max-width:var(--container);
-    padding:18px 24px;
-    display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
-    border-top:1px solid rgba(242,204,76,.25);border-bottom:1px solid rgba(242,204,76,.25);
-    background:linear-gradient(90deg, rgba(242,204,76,.04), rgba(242,204,76,.10), rgba(242,204,76,.04));
-  }
-  .ribbon b{color:var(--gold);font-family:'Viaoda Libre',serif;font-size:1.4rem;letter-spacing:-.01em}
-  .ribbon span{font-size:.82rem;letter-spacing:.1em;color:rgba(255,255,255,.85)}
 
   @media (prefers-reduced-motion:reduce){
+    .hero-photo,.reserve-art .photo{animation:none}
+    .hero-scroll-cue .line{animation:none}
     *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   }
 </style>
 </head>
 <body>
 
-<!-- ====== NAV ====== -->
-<nav class="top">
+<!-- ===================== NAV ===================== -->
+<nav class="top" id="topNav">
   <div class="nav-inner">
-    <a class="brand" href="#top"><span class="dot"></span><span>Dessert House</span></a>
+    <a class="brand" href="#top" aria-label="Dessert House home">
+      <span class="mark" aria-hidden="true">DH</span>
+      <span class="name">Dessert House<small>Crayford</small></span>
+    </a>
     <ul class="nav-links">
-      <li><a href="#story">Story</a></li>
+      <li><a href="#promise">Our promise</a></li>
       <li><a href="#featured">Featured</a></li>
       <li><a href="#menu">Menu</a></li>
       <li><a href="#visit">Visit</a></li>
     </ul>
-    <a class="nav-cta" href="#menu">
-      Order
+    <a class="nav-cta" href="#reserve">
+      Reserve
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </a>
   </div>
 </nav>
 
-<!-- ====== HERO ====== -->
+<!-- ===================== HERO ===================== -->
 <header class="hero" id="top">
-  <div class="hero-bg"></div>
-  <canvas id="drizzleCanvas" aria-hidden="true"></canvas>
-  <div class="hero-vignette" aria-hidden="true"></div>
+  <div class="hero-photo" aria-hidden="true"></div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-grain" aria-hidden="true"></div>
 
   <div class="hero-inner">
-    <span class="hero-tag"><span class="pulse"></span>Open now · 3 pm – 11 pm</span>
-    <h1>Late-night desserts,<br><em>served warm.</em></h1>
-    <p class="hero-sub">Hot cookie dough, fresh-iron waffles, scoop sundaes and thick milkshakes. Every order made to order, from a small Crayford kitchen.</p>
+    <span class="hero-status"><span class="pulse" aria-hidden="true"></span>Open now · 3 pm – 11 pm</span>
+    <h1>A late-night dessert, <em>served warm.</em></h1>
+    <p class="hero-sub">Hot cookie dough, fresh-iron waffles, scoop sundaes and thick milkshakes — every order made to order, from a small Crayford kitchen.</p>
     <div class="hero-actions">
-      <a class="pill pill-gold" href="#menu">See the menu</a>
-      <a class="pill pill-ghost" href="#visit">Visit us</a>
+      <a class="pill pill-gold" href="#reserve">
+        Reserve a table
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="pill pill-ghost" href="#menu">See the menu</a>
     </div>
     <div class="hero-meta">
       <span><b>120+</b> menu items</span>
@@ -411,66 +555,59 @@
       <span><b>Crayford</b>, Kent</span>
     </div>
   </div>
+
+  <div class="hero-scroll-cue" aria-hidden="true">
+    <span>Scroll</span>
+    <span class="line"></span>
+  </div>
 </header>
 
-<!-- ====== Voucher ribbon ====== -->
-<div class="ribbon">
+<!-- ===================== VOUCHER RIBBON ===================== -->
+<div class="ribbon" role="note" aria-label="Current offer">
   <b>10% off</b>
-  <span>when you spend £20 or more · use by 12 Aug 2026 · in store &amp; delivery</span>
+  <span>when you spend £20 or more · in store &amp; delivery</span>
 </div>
 
-<!-- ====== STORY ====== -->
-<section class="zone zone-blur" id="story">
+<!-- ===================== PROMISE ===================== -->
+<section class="promise" id="promise">
   <div class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Our story</p>
-      <h2><span class="stop-flourish">The dessert house</span></h2>
-      <p class="sec-sub">A small Crayford kitchen with one rule — never serve a dessert you wouldn't finish yourself.</p>
+    <div class="sec-head" style="padding-top:0">
+      <p class="eyebrow center">Our promise</p>
+      <h2><span class="stop-flourish">Three things, every time</span></h2>
+      <p class="sec-sub">The small list of standards we won't compromise on, no matter how busy the kitchen.</p>
     </div>
 
-    <div class="story-grid">
-      <div class="story-copy">
-        <p>We started with one waffle iron, one batter recipe, and the conviction that a 10pm dessert deserves the same care as a sit-down pudding. Every waffle is <b>cooked to order</b>, every cookie dough <b>baked in front of you</b>, every milkshake <b>spun by hand</b>.</p>
-        <p>The menu is long because the cravings are specific. Want a <b>warm Lotus Biscoff cookie dough with vanilla gelato</b> on a Tuesday night? You can have it. Want a <b>Ferrero Rocher waffle</b> with extra chocolate sauce? Take a seat. We're open until 11.</p>
-        <p>We're a small independent — order in store, click &amp; collect, or delivery within a short ride of Crayford.</p>
-      </div>
-      <figure class="story-art">
-        <div class="photo"></div>
-        <figcaption>The kitchen — Crayford, Kent</figcaption>
-      </figure>
+    <div class="promise-grid">
+      <article class="ethos">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13l4 4L20 5"/></svg>
+        </span>
+        <h3>Made to order</h3>
+        <p>Every waffle pressed when you order. Every cookie dough baked fresh. Nothing held warm.</p>
+      </article>
+      <article class="ethos">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </span>
+        <h3>The late kitchen</h3>
+        <p>Open every evening until 11. The dessert craving that hits at 10pm — we're still cooking.</p>
+      </article>
+      <article class="ethos">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5-7-11a7 7 0 0114 0c0 6-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        </span>
+        <h3>Local &amp; independent</h3>
+        <p>One Crayford kitchen, one menu, one team. Walk in, click &amp; collect, or delivery near you.</p>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ====== CROWNING GLORY (stats) ====== -->
-<section class="zone zone-solid glory">
-  <div class="wrap">
-    <div class="sec-head" style="padding-bottom:30px">
-      <p class="eyebrow">Crowning glory</p>
-      <h2><span class="stop-flourish">By the numbers</span></h2>
-    </div>
-    <div class="glory-grid">
-      <div class="glory-card">
-        <div class="glory-num">120+</div>
-        <div class="glory-cap">Items on the menu</div>
-      </div>
-      <div class="glory-card">
-        <div class="glory-num">3 – 11</div>
-        <div class="glory-cap">Open every evening</div>
-      </div>
-      <div class="glory-card">
-        <div class="glory-num">10%</div>
-        <div class="glory-cap">Off when you spend £20+</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== FEATURED ====== -->
-<section class="zone zone-blur featured" id="featured">
+<!-- ===================== FEATURED ===================== -->
+<section class="featured" id="featured">
   <div class="wrap">
     <div class="sec-head">
-      <p class="eyebrow">Most liked</p>
+      <p class="eyebrow center">Most liked</p>
       <h2><span class="stop-flourish">Featured items</span></h2>
       <p class="sec-sub">The desserts our regulars order again and again.</p>
     </div>
@@ -478,10 +615,119 @@
   </div>
 </section>
 
-<!-- ====== MENU ====== -->
-<section class="zone zone-solid menu" id="menu">
-  <div class="sec-head" style="padding-bottom:36px">
-    <p class="eyebrow">The full menu</p>
+<!-- ===================== RESERVE ===================== -->
+<section class="reserve" id="reserve">
+  <div class="reserve-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow center">Reserve a table</p>
+      <h2><span class="stop-flourish">Hold your seat</span></h2>
+      <p class="sec-sub">Tables fill on Friday and Saturday evenings — book ahead and we'll keep one warm. We confirm by phone or email within an hour.</p>
+    </div>
+
+    <div class="reserve-grid">
+      <aside class="reserve-art" aria-hidden="true">
+        <div class="photo"></div>
+        <p class="quote">A waffle is better when there's already a seat waiting for it.</p>
+      </aside>
+
+      <div class="reserve-card">
+        <h2><span class="stop-flourish">Booking request</span></h2>
+        <p class="lede">Tell us when you'd like to come in and we'll confirm shortly. All bookings hold for 15 minutes past the requested time.</p>
+
+        <form id="bookingForm" novalidate>
+          <!-- Web3Forms access key (replace with your own from https://web3forms.com — free) -->
+          <input type="hidden" name="access_key" value="REPLACE_WITH_YOUR_WEB3FORMS_KEY">
+          <input type="hidden" name="subject" value="New table booking — Dessert House Crayford">
+          <input type="hidden" name="from_name" value="Dessert House booking">
+          <!-- Honeypot -->
+          <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="bf-name">Name <span class="req" aria-hidden="true">*</span></label>
+              <input id="bf-name" name="name" type="text" autocomplete="name" required placeholder="Your name">
+              <span class="err" id="err-name">Please enter your name.</span>
+            </div>
+
+            <div class="field">
+              <label for="bf-phone">Phone <span class="req" aria-hidden="true">*</span></label>
+              <input id="bf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="07…">
+              <span class="err" id="err-phone">A phone number lets us confirm.</span>
+            </div>
+
+            <div class="field full">
+              <label for="bf-email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="bf-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+              <span class="err" id="err-email">Please enter a valid email.</span>
+            </div>
+
+            <div class="field">
+              <label for="bf-date">Date <span class="req" aria-hidden="true">*</span></label>
+              <input id="bf-date" name="date" type="date" required>
+              <span class="err" id="err-date">Please pick a date.</span>
+            </div>
+
+            <div class="field">
+              <label for="bf-time">Time <span class="req" aria-hidden="true">*</span></label>
+              <select id="bf-time" name="time" required>
+                <option value="">Select…</option>
+                <option>3:00 pm</option><option>3:30 pm</option>
+                <option>4:00 pm</option><option>4:30 pm</option>
+                <option>5:00 pm</option><option>5:30 pm</option>
+                <option>6:00 pm</option><option>6:30 pm</option>
+                <option>7:00 pm</option><option>7:30 pm</option>
+                <option>8:00 pm</option><option>8:30 pm</option>
+                <option>9:00 pm</option><option>9:30 pm</option>
+                <option>10:00 pm</option><option>10:30 pm</option>
+              </select>
+              <span class="err" id="err-time">Please choose a time.</span>
+            </div>
+
+            <div class="field full">
+              <label for="bf-party">Party size <span class="req" aria-hidden="true">*</span></label>
+              <select id="bf-party" name="party_size" required>
+                <option value="">How many?</option>
+                <option>1 guest</option><option>2 guests</option><option>3 guests</option>
+                <option>4 guests</option><option>5 guests</option><option>6 guests</option>
+                <option>7 guests</option><option>8 guests</option>
+                <option>9+ guests (we'll call to confirm)</option>
+              </select>
+              <span class="err" id="err-party">Please pick a party size.</span>
+            </div>
+
+            <div class="field full">
+              <label for="bf-notes">Notes <span class="hint" style="margin-left:6px">(allergies, occasion, dietary)</span></label>
+              <textarea id="bf-notes" name="notes" placeholder="Anything we should know?"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="pill submit-btn" id="submitBtn">
+              <span class="spin" aria-hidden="true"></span>
+              <span class="label">Request booking</span>
+            </button>
+            <span class="hint" style="color:var(--muted);font-size:.78rem;letter-spacing:.04em">We confirm by phone or email.</span>
+          </div>
+
+          <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="reserve-meta">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.95.37 1.88.72 2.77a2 2 0 01-.45 2.11l-1.27 1.27a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.89.35 1.82.59 2.77.72A2 2 0 0122 16.92z"/></svg>
+            Or call us: <a href="tel:+440000000000">+44 (0) 00 0000 0000</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MENU ===================== -->
+<section class="menu" id="menu">
+  <div class="sec-head">
+    <p class="eyebrow center">The full menu</p>
     <h2><span class="stop-flourish">Everything we serve</span></h2>
     <p class="sec-sub">Twelve categories. Use the chips to jump.</p>
   </div>
@@ -497,9 +743,9 @@
   </div>
 </section>
 
-<!-- ====== HOURS ====== -->
+<!-- ===================== HOURS ===================== -->
 <section class="strip" id="hours">
-  <p class="eyebrow" style="justify-content:center;display:inline-flex">Opening hours</p>
+  <p class="eyebrow center" style="display:inline-flex">Opening hours</p>
   <h2><span class="stop-flourish">Open every evening</span></h2>
   <div class="hours">
     <div class="day">Monday</div><div class="time">3 pm – 11 pm</div>
@@ -512,12 +758,12 @@
   </div>
 </section>
 
-<!-- ====== VISIT ====== -->
-<section class="zone zone-solid visit" id="visit">
+<!-- ===================== VISIT ===================== -->
+<section class="visit" id="visit">
   <div class="wrap">
-    <p class="eyebrow" style="justify-content:center;display:inline-flex">Find us</p>
+    <p class="eyebrow center" style="display:inline-flex">Find us</p>
     <h2><span class="stop-flourish">In the heart of Crayford</span></h2>
-    <p>Walk in, click &amp; collect, or order delivery. We're open every evening until 11.</p>
+    <p class="vintro">Walk in, click &amp; collect, or order delivery. We're open every evening until 11.</p>
 
     <div class="visit-grid">
       <div class="vcard">
@@ -535,8 +781,8 @@
     </div>
 
     <div class="hero-actions" style="margin-top:50px;justify-content:center">
-      <a class="pill pill-gold" href="#menu">View the menu</a>
-      <a class="pill pill-ghost" href="tel:+440000000000">Call to order</a>
+      <a class="pill pill-gold" href="#reserve">Reserve a table</a>
+      <a class="pill pill-ghost" href="#menu">View the menu</a>
     </div>
   </div>
 </section>
@@ -551,12 +797,12 @@
 
 <script>
 /* =========================
-   Menu data
+   Menu data — edit freely
    ========================= */
 const MENU = [
   { id:'hot-cookie-dough', title:'Hot Cookie Dough', items:[
     { name:'Milk Chocolate Cookie Dough', price:'£7.99', rate:'76% (187)', desc:'Served with vanilla ice cream or whipped cream.' },
-    { name:'Kinder Bueno White Cookie Dough', price:'£9.85', rate:'62% (29)', desc:'Warm, gooey cookie dough topped with white pieces, drizzled with white and milk chocolate, sprinkled with shavings.' },
+    { name:'Kinder Bueno White Cookie Dough', price:'£9.85', rate:'62% (29)', desc:'Warm, gooey cookie dough with white pieces, drizzled with white and milk chocolate, sprinkled with shavings.' },
     { name:'Strawberry & Cheesecake Cookie Dough', price:'£9.65', tag:'pop', desc:'Sweet strawberry and cheesecake mix in a warm cookie dough treat.' },
     { name:'Dubai Chocolate Cookie Dough', price:'£10.25', tag:'pop', desc:'Warm cookie dough drizzled with luxury chocolate sauce, Belgian sprinkles, and pistachio kunafa.' },
     { name:'Dubai White Chocolate Cookie Dough', price:'£10.25', desc:'Luxury white cookie dough topped with Dubai pistachio kunafa mix, white chocolate shavings and sauce.' },
@@ -569,12 +815,12 @@ const MENU = [
     { name:'Strawberry & Nutella Cookie Dough', price:'£9.65', rate:'80% (5)', desc:'Sweet and indulgent cookie dough with strawberries and Nutella.' },
     { name:'Oreo Cookie Dough', price:'£9.75', rate:'66% (9)', desc:'Warm, gooey cookie dough filled with Oreo pieces.' },
     { name:"Terry's Chocolate Orange Cookie Dough", price:'£9.65', desc:'Rich chocolatey cookie dough with a zesty orange flavour.' },
-    { name:'Galaxy Caramel Cookie Dough', price:'£9.65', rate:'71% (7)', desc:'Drizzled with caramel sauce, sprinkled with Belgian chocolate shavings, topped with caramel pieces.' },
-    { name:'Banoffee Cookie Dough', price:'£9.65', desc:'Fresh white cookie dough with sliced banana, smothered in toffee sauce, served with ice cream or cream.' },
-    { name:'Lindt Lindor Milk Cookie Dough', price:'£9.95', rate:'100% (3)', desc:'Luxury milk cookie dough topped with Lindor milk truffles, Belgian shavings and white chocolate sauce.' },
+    { name:'Galaxy Caramel Cookie Dough', price:'£9.65', rate:'71% (7)', desc:'Drizzled with caramel sauce, sprinkled with Belgian shavings, topped with caramel pieces.' },
+    { name:'Banoffee Cookie Dough', price:'£9.65', desc:'Fresh white cookie dough with sliced banana, toffee sauce, served with ice cream or cream.' },
+    { name:'Lindt Lindor Milk Cookie Dough', price:'£9.95', rate:'100% (3)', desc:'Luxury milk cookie dough topped with Lindor truffles, Belgian shavings and white chocolate sauce.' },
     { name:'Milkybar Cookie Dough', price:'£9.65', rate:'66% (3)', desc:'Warm cookie dough with creamy Milkybar chunks.' },
-    { name:"Reese's Peanut-butter Cookie Dough", price:'£9.85', desc:'Rich peanut-butter cookie dough with a Reese\'s twist.' },
-    { name:'Strawberry Milk Chocolate Cookie Dough', price:'£9.65', desc:'Fresh milk chocolate cookie dough served with strawberries, Belgian shavings and milk chocolate sauce.' },
+    { name:"Reese's Peanut-butter Cookie Dough", price:'£9.85', desc:"Rich peanut-butter cookie dough with a Reese's twist." },
+    { name:'Strawberry Milk Chocolate Cookie Dough', price:'£9.65', desc:'Fresh milk chocolate cookie dough with strawberries, Belgian shavings and milk chocolate sauce.' },
     { name:'Strawberry Butterscotch Cookie Dough', price:'£9.75', desc:'Hot white cookie dough with fresh strawberry, butterscotch sauce and white chocolate sprinkles.' },
     { name:'Nutella Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough with Nutella — rich chocolate-hazelnut flavour.' },
     { name:'Milky Way Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Milky Way pieces.' },
@@ -586,11 +832,11 @@ const MENU = [
     { name:'Chocolate Fudge Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough with a rich chocolate fudge flavour.' },
     { name:'Crunchie Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough topped with Crunchie pieces for that honeycomb crunch.' },
     { name:'Maltesers Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Maltesers.' },
-    { name:"Hershey's Cookie Dough", price:'£9.75', desc:'Warm, gooey cookie dough with chunks of Hershey\'s chocolate.' },
-    { name:"M&M's Peanut Cookie Dough", price:'£9.75', desc:'Cookie dough packed with peanut M&M pieces — crunchy chocolate-and-peanut.' },
+    { name:"Hershey's Cookie Dough", price:'£9.75', desc:"Warm, gooey cookie dough with chunks of Hershey's chocolate." },
+    { name:"M&M's Peanut Cookie Dough", price:'£9.75', desc:'Cookie dough packed with peanut M&M pieces.' },
     { name:'Daim Bar Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough loaded with Daim bar pieces.' },
     { name:'Luxury Dubai Cookie Dough', price:'£10.75', desc:'Warm, gooey cookie dough with an indulgent Dubai-inspired flavour.' },
-    { name:'Banana & Bueno Sauce Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough topped with banana and drizzled with Bueno sauce.' },
+    { name:'Banana & Bueno Sauce Cookie Dough', price:'£9.75', desc:'Warm, gooey cookie dough topped with banana and Bueno sauce.' },
     { name:'Dubai Bueno Kunafa Cookie Dough', price:'£11.25', desc:'Warm, gooey cookie dough topped with Bueno pieces and Dubai kunafa.' },
   ]},
   { id:'american-waffles', title:'American Waffles', items:[
@@ -612,7 +858,7 @@ const MENU = [
     { name:'Maltesers Waffle', price:'£10.25', desc:'Maltesers, chocolate shavings and rich milk chocolate sauce.' },
     { name:'White Chocolate Mountain Waffle', price:'£9.45', desc:'Layer of white chocolate spread, white chocolate pieces, and white chocolate sauce.' },
     { name:'Galaxy Caramel Waffle', price:'£9.95', rate:'94% (19)', desc:'Galaxy caramel pieces, chocolate sprinkles and rich caramel sauce.' },
-    { name:"Reese's Waffle", price:'£10.55', rate:'93% (30)', desc:'Spread with peanut butter, topped with Reese\'s and chocolate sprinkles, rich chocolate sauce.' },
+    { name:"Reese's Waffle", price:'£10.55', rate:'93% (30)', desc:"Spread with peanut butter, topped with Reese's and chocolate sprinkles, rich chocolate sauce." },
     { name:'Milkybar Waffle', price:'£9.89', rate:'92% (25)', desc:'Milkybar pieces with white chocolate shavings and rich white chocolate sauce.' },
     { name:'Chocolate Lover Waffle', price:'£9.45', rate:'94% (17)', desc:'Smothered in chocolate spread with milk chocolate sprinkles and rich chocolate sauce.' },
     { name:'Chocolate Fudge Waffle', price:'£9.89', desc:'Crushed chocolate fudge drizzled with rich chocolate sauce.' },
@@ -620,13 +866,13 @@ const MENU = [
     { name:'White Chocolate & Raspberry Waffle', price:'£9.45', desc:'White chocolate shavings with rich raspberry sauce.' },
     { name:"M&M's Peanut Waffle", price:'£9.95', rate:'92% (14)', desc:'Topped with peanut M&Ms, chocolate sprinkles and rich chocolate sauce.' },
     { name:'Daim Bar Waffle', price:'£9.95', desc:'Daim bar pieces with chocolate sprinkles and rich caramel sauce.' },
-    { name:"Terry's Chocolate Orange Waffle", price:'£9.95', rate:'100% (6)', desc:'Terry\'s Chocolate Orange pieces with chocolate sprinkles and rich milk chocolate sauce.' },
+    { name:"Terry's Chocolate Orange Waffle", price:'£9.95', rate:'100% (6)', desc:"Terry's Chocolate Orange pieces with chocolate sprinkles and rich milk chocolate sauce." },
     { name:'Strawberry Drizzle Waffle', price:'£9.99', desc:'Freshly sliced strawberry with rich strawberry sauce.' },
     { name:'Crunchie Waffle', price:'£9.89', rate:'90% (11)', desc:'Crunchie pieces with chocolate sprinkles and rich caramel sauce.' },
     { name:'Smarties Waffle', price:'£9.89', desc:'Smarties with chocolate sprinkles and rich chocolate sauce.' },
     { name:'Marshmallow Waffle', price:'£9.89', desc:'Marshmallow pieces with rich chocolate sauce.' },
     { name:'Lindor Milk Waffle', price:'£10.95', desc:'Drizzled in white and milk sauce, Belgian shavings, topped with milk Lindor truffles.' },
-    { name:"Hershey's Waffle", price:'£9.95', desc:'Hershey\'s pieces with white chocolate shavings and rich white chocolate sauce.' },
+    { name:"Hershey's Waffle", price:'£9.95', desc:"Hershey's pieces with white chocolate shavings and rich white chocolate sauce." },
     { name:'Oreo Waffle', price:'£9.95', tag:'pop', desc:'Oreo crumbles, Belgian white sprinkles and luxury white chocolate sauce.' },
     { name:'Strawberry Milk Chocolate Waffle', price:'£9.75', desc:'Light and fluffy waffle infused with strawberry and milk chocolate.' },
     { name:'Mini Eggs Waffle', price:'£9.95', tag:'new', desc:'Mini Eggs, Belgian milk chocolate sprinkles and luxury milk chocolate sauce.' },
@@ -638,11 +884,11 @@ const MENU = [
   ]},
   { id:'sundaes', title:'Sundaes', items:[
     { name:'Chocolate Fudge', price:'£9.55', rate:'63% (33)', desc:'Hot chocolate fudge with cold vanilla ice cream, chocolate sprinkles and chocolate sauce.' },
-    { name:'Bubblegum Sundae', price:'£9.65', rate:'86% (46)', desc:'Bubblegum and strawberry scoops with vanilla, strawberry and bubblegum syrups, 100\'s and 1000\'s.' },
+    { name:'Bubblegum Sundae', price:'£9.65', rate:'86% (46)', desc:"Bubblegum and strawberry scoops with vanilla, strawberry and bubblegum syrups, 100's and 1000's." },
     { name:'Mango Crave', price:'£9.55', rate:'84% (13)', desc:'Real Alfonso mango ice cream, vanilla, fruit pieces and a special mango syrup.' },
     { name:'Dubai Kunafa Sundae', price:'£11.95', rate:'75% (4)', desc:'Luxury pistachio gelato with Dubai kunafa and chocolate sauce.' },
     { name:'Ferrero Rocher Sundae', price:'£9.75', rate:'91% (46)', desc:'Ferrero ice cream with vanilla, milk chocolate flakes, Ferrero pieces and a luxury chocolate syrup.' },
-    { name:'Oreo Cookie Sundae', price:'£9.55', rate:'80% (42)', desc:'Glorious cookies-and-cream and vanilla with chocolate syrup, topped with crushed Oreo cookie.' },
+    { name:'Oreo Cookie Sundae', price:'£9.55', rate:'80% (42)', desc:'Cookies-and-cream and vanilla with chocolate syrup, topped with crushed Oreo cookie.' },
     { name:'Strawberry Slice Sundae', price:'£9.55', rate:'75% (20)', desc:'Strawberry and vanilla scoops with strawberry syrup on a bed of strawberry slices, whipped cream.' },
     { name:'Very Cherry Delight', price:'£9.55', rate:'100% (33)', desc:'Cherry and vanilla scoops with whipped cream and a mouth-watering cherry syrup.' },
     { name:'Mixed Sundae', price:'£9.95', rate:'72% (11)', desc:'Bubblegum, lemon, raspberry and mango with sprinkles, strawberry, raspberry sauce and whipped cream.' },
@@ -657,7 +903,7 @@ const MENU = [
   { id:'cakes', title:'Cakes', items:[
     { name:'Luxury Chocolate Fudge Cake', price:'£5.95', rate:'86% (69)', desc:'Rich, velvety chocolate cake smothered in decadent fudge.' },
     { name:'Lotus Biscoff Cheesecake', price:'£6.65', rate:'92% (25)', desc:'Creamy cheesecake with the unique taste of Lotus Biscoff.' },
-    { name:'Dubai Kunafa Cake', price:'£7.75', rate:'100% (4)', desc:'Real Dubai mix, luxury milk chocolate sauce, pistachio sauce and Belgian chocolate shavings.' },
+    { name:'Dubai Kunafa Cake', price:'£7.75', rate:'100% (4)', desc:'Real Dubai mix, luxury milk chocolate sauce, pistachio sauce and Belgian shavings.' },
   ]},
   { id:'drinks', title:'Drinks', items:[
     { name:'Coke', price:'£1.49', rate:'75% (29)' },
@@ -705,7 +951,6 @@ const MENU = [
   ]},
 ];
 
-/* Featured = top 15 from the supplied "most liked" list, with images from Unsplash */
 const FEATURED = [
   { rank:1, name:'Kinder Bueno (White) Waffle', price:'£10.45', img:'https://images.unsplash.com/photo-1535920527002-b35e96722eb9?auto=format&fit=crop&w=1200&q=80' },
   { rank:2, name:'Kinder Bueno Waffle', price:'£10.45', img:'https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=1200&q=80' },
@@ -716,12 +961,6 @@ const FEATURED = [
   { rank:7, name:'Chocolate Fudge Sundae', price:'£9.55', rate:'63% (33)', img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80' },
   { rank:8, name:'Lotus Biscoff Waffle', price:'£9.95', rate:'90% (99)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
   { rank:9, name:'Luxury Dubai Waffle', price:'£12.50', img:'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=1200&q=80' },
-  { rank:10, name:'Milk Chocolate Cookie Dough', price:'£7.99', rate:'76% (187)', img:'https://images.unsplash.com/photo-1568051243851-f9b136146e97?auto=format&fit=crop&w=1200&q=80' },
-  { rank:11, name:'Lotus Biscoff Cheesecake', price:'£6.65', rate:'92% (25)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
-  { rank:12, name:'Dubai Chocolate Waffle', price:'£11.50', img:'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=1200&q=80' },
-  { rank:13, name:'Dubai Kunafa Cake', price:'£7.75', rate:'100% (4)', img:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=1200&q=80' },
-  { rank:14, name:'Luxury Chocolate Fudge Cake', price:'£5.95', rate:'86% (69)', img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=1200&q=80' },
-  { rank:15, name:'Milk Chocolate Strawberries', price:'£6.99', rate:'70% (10)', img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1200&q=80' },
 ];
 
 /* ===== Render featured ===== */
@@ -770,7 +1009,6 @@ function renderMenu(){
     </div>
   `).join('');
 
-  /* Active chip on scroll */
   const blocks = MENU.map(c => document.getElementById('cat-'+c.id));
   const chipsEls = [...chips.querySelectorAll('.cat-chip')];
   const onScroll = () => {
@@ -780,7 +1018,6 @@ function renderMenu(){
     chipsEls.forEach(ch => ch.classList.toggle('active', ch.getAttribute('href') === '#'+active));
   };
   window.addEventListener('scroll', onScroll, { passive: true });
-  /* Smooth scroll into view for chip clicks */
   chipsEls.forEach(ch => {
     ch.addEventListener('click', e => {
       e.preventDefault();
@@ -791,104 +1028,101 @@ function renderMenu(){
   });
 }
 
-/* ===== Hero canvas: chocolate drizzle + golden batter drops ===== */
+/* ===== Nav background on scroll ===== */
 (function(){
-  const cv = document.getElementById('drizzleCanvas');
-  if (!cv) return;
-  const ctx = cv.getContext('2d');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isMobile = matchMedia('(max-width: 760px)').matches;
-  let W=0, H=0, DPR=isMobile?1:Math.min(devicePixelRatio||1, 2);
+  const nav = document.getElementById('topNav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 
-  function size(){
-    const rect = cv.getBoundingClientRect();
-    W = rect.width; H = rect.height;
-    cv.width = W*DPR; cv.height = H*DPR;
-    ctx.setTransform(DPR,0,0,DPR,0,0);
+/* ===== Booking form ===== */
+(function(){
+  const form = document.getElementById('bookingForm');
+  if (!form) return;
+  const status = document.getElementById('formStatus');
+  const btn = document.getElementById('submitBtn');
+  const dateInput = document.getElementById('bf-date');
+  /* min date = today, max date = 90 days out */
+  const today = new Date(); today.setHours(0,0,0,0);
+  const pad = n => String(n).padStart(2,'0');
+  const fmt = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  dateInput.min = fmt(today);
+  const max = new Date(today); max.setDate(max.getDate()+90);
+  dateInput.max = fmt(max);
+
+  const fields = [
+    { id:'bf-name', errId:'err-name', validate: v => v.trim().length >= 2 },
+    { id:'bf-phone', errId:'err-phone', validate: v => v.replace(/[^\d]/g,'').length >= 7 },
+    { id:'bf-email', errId:'err-email', validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    { id:'bf-date', errId:'err-date', validate: v => !!v },
+    { id:'bf-time', errId:'err-time', validate: v => !!v },
+    { id:'bf-party', errId:'err-party', validate: v => !!v },
+  ];
+
+  function showError(field, on){
+    const el = document.getElementById(field.id);
+    el.closest('.field').classList.toggle('has-error', on);
   }
-  size();
-  window.addEventListener('resize', size);
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    el.addEventListener('blur', () => showError(f, !f.validate(el.value)));
+    el.addEventListener('input', () => { if (el.closest('.field').classList.contains('has-error')) showError(f, !f.validate(el.value)); });
+  });
 
-  /* Particles: small golden droplets that fall with gravity and form ripples at the bottom */
-  const drops = [];
-  const SPAWN_X = () => W * (0.05 + Math.random()*0.9);
-  const MAX_DROPS = isMobile ? 22 : 48;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    status.className = 'form-status';
+    status.textContent = '';
 
-  function spawn(){
-    if (drops.length >= MAX_DROPS) return;
-    drops.push({
-      x: SPAWN_X(),
-      y: -10 - Math.random()*40,
-      vy: 0.6 + Math.random()*1.0,
-      r: 1.2 + Math.random()*2.4,
-      hue: 38 + Math.random()*12,   // amber range
-      alpha: 0.5 + Math.random()*0.35,
-      tail: 8 + Math.random()*18,
+    let firstInvalid = null;
+    fields.forEach(f => {
+      const el = document.getElementById(f.id);
+      const ok = f.validate(el.value);
+      showError(f, !ok);
+      if (!ok && !firstInvalid) firstInvalid = el;
     });
-  }
-
-  /* Ripples at the bottom */
-  const ripples = [];
-
-  function step(){
-    if (reduced){ /* draw static gradient & exit */
-      ctx.clearRect(0,0,W,H);
+    if (firstInvalid) {
+      firstInvalid.focus();
+      status.className = 'form-status err';
+      status.innerHTML = '<b>Please check the highlighted fields.</b>';
       return;
     }
-    /* Trail: gentle fade rather than full clear, leaves a soft drizzle streak */
-    ctx.fillStyle = 'rgba(0,0,0,0.18)';
-    ctx.fillRect(0,0,W,H);
 
-    /* Spawn 1-2 per frame */
-    if (Math.random() < 0.55) spawn();
-    if (Math.random() < 0.35) spawn();
+    const accessKey = form.querySelector('[name="access_key"]').value;
+    if (!accessKey || accessKey.startsWith('REPLACE_')) {
+      status.className = 'form-status err';
+      status.innerHTML = '<b>Booking isn\'t hooked up yet.</b> The site owner needs to add their Web3Forms access key in index.html (search for <code>REPLACE_WITH_YOUR_WEB3FORMS_KEY</code>). Free key: <a href="https://web3forms.com/" target="_blank" rel="noopener" style="color:var(--gold)">web3forms.com</a>.';
+      return;
+    }
 
-    for (let i = drops.length-1; i>=0; i--){
-      const d = drops[i];
-      d.vy += 0.04;
-      d.y += d.vy;
-      /* Drop core */
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
-      ctx.fillStyle = `hsla(${d.hue}, 88%, 62%, ${d.alpha})`;
-      ctx.fill();
-      /* Tail */
-      ctx.strokeStyle = `hsla(${d.hue}, 88%, 58%, ${d.alpha*0.45})`;
-      ctx.lineWidth = d.r * 0.75;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(d.x, d.y - d.tail);
-      ctx.lineTo(d.x, d.y);
-      ctx.stroke();
+    btn.classList.add('loading');
+    btn.disabled = true;
 
-      if (d.y > H - 30 + Math.random()*20){
-        ripples.push({ x:d.x, y: H - 18, r: d.r*1.2, max: 18 + Math.random()*20, alpha: 0.55, hue: d.hue });
-        drops.splice(i,1);
+    try {
+      const data = new FormData(form);
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method:'POST',
+        headers:{ 'Accept':'application/json' },
+        body: data,
+      });
+      const out = await res.json().catch(()=>({}));
+      if (res.ok && out.success !== false) {
+        status.className = 'form-status ok';
+        status.innerHTML = '<b>Thank you — we\'ve got it.</b> We\'ll confirm your table by phone or email within an hour. (If we haven\'t replied by then, please call us directly.)';
+        form.reset();
+        dateInput.min = fmt(today);
+      } else {
+        throw new Error(out.message || 'submit failed');
       }
+    } catch (err) {
+      status.className = 'form-status err';
+      status.innerHTML = '<b>Something went wrong.</b> Please try again, or call us on <a href="tel:+440000000000" style="color:var(--gold)">+44 (0) 00 0000 0000</a>.';
+    } finally {
+      btn.classList.remove('loading');
+      btn.disabled = false;
     }
-
-    for (let i = ripples.length-1; i>=0; i--){
-      const r = ripples[i];
-      r.r += 0.6;
-      r.alpha *= 0.94;
-      ctx.beginPath();
-      ctx.arc(r.x, r.y, r.r, 0, Math.PI*2);
-      ctx.strokeStyle = `hsla(${r.hue}, 80%, 60%, ${r.alpha})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      if (r.r > r.max || r.alpha < 0.04) ripples.splice(i,1);
-    }
-
-    requestAnimationFrame(step);
-  }
-  /* Throttle: only run when hero is in viewport */
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting && !cv._running){ cv._running = true; requestAnimationFrame(step); }
-      else if (!e.isIntersecting){ cv._running = false; }
-    });
-  }, { threshold: 0.05 });
-  io.observe(cv);
+  });
 })();
 
 renderFeatured();
