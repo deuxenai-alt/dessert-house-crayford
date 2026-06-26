@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reserve a table — Dessert House Crayford</title>
+<meta name="description" content="Reserve a table at Dessert House Crayford. Live availability — open every evening 3pm to 11pm.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&family=Cinzel:wght@500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-page="book" data-base="../">
+
+<div id="nav-mount"></div>
+
+<section class="chero">
+  <div class="hero-photo" aria-hidden="true" style="background-image:url('https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=2880&q=85')"></div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-grain" aria-hidden="true"></div>
+  <div class="chero-inner">
+    <p class="eyebrow">Reservations</p>
+    <h1>Hold your seat, <em>warm.</em></h1>
+    <p class="chero-sub">Tables fill quickly on Friday and Saturday evenings. Pick a date, choose an available slot, and we'll confirm within an hour.</p>
+  </div>
+</section>
+
+<section class="book-wrap">
+  <div class="wrap">
+    <div id="book-banner"></div>
+    <div class="book-card">
+      <div id="book-root">
+        <!-- Booking flow is rendered here by booking.js -->
+        <div class="slots-loading"><span class="spin" aria-hidden="true"></span><span>Loading booking…</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="hours-mount"></div>
+<div id="visit-mount"></div>
+<div id="footer-mount"></div>
+
+<script src="../assets/data.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/booking.js"></script>
+</body>
+</html>
