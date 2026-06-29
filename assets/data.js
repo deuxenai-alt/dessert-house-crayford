@@ -5,7 +5,7 @@
 window.CONFIG = {
   /* Paste the Google Apps Script Web App URL here after deploying apps-script/Code.gs */
   /* Example: https://script.google.com/macros/s/AKfycb.../exec */
-  bookingApi: 'REPLACE_WITH_YOUR_APPS_SCRIPT_WEB_APP_URL',
+  bookingApi: 'https://script.google.com/macros/s/AKfycbwuQxtsI6yaCFoVPoN1G2tQRlmk8vwp8RCWFWfQICSkZCPAi88LfKOmsLsRI8yIxyvo/exec',
 
   /* Site identity */
   brand: {
