@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Log in or sign up — Just Desserts Crayford</title>
+<meta name="description" content="Log in to your Just Desserts account to track orders and reorder your favourites, or create an account in seconds.">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Viaoda+Libre&family=Cinzel:wght@500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css?v=3">
+</head>
+<body data-page="auth" data-base="../">
+
+<div id="nav-mount"></div>
+
+<section class="auth-wrap">
+  <div class="auth-card">
+    <a class="auth-brand" href="../">
+      <span class="mark" aria-hidden="true">JD</span>
+    </a>
+
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab is-active" id="tab-login" role="tab">Log in</button>
+      <button class="auth-tab" id="tab-signup" role="tab">Create account</button>
+    </div>
+
+    <div id="auth-banner"></div>
+
+    <!-- LOG IN -->
+    <form class="auth-form" id="form-login" novalidate>
+      <h1>Welcome back</h1>
+      <p class="auth-sub">Log in to track your orders and reorder in a tap.</p>
+      <div class="field">
+        <label for="li-email">Email</label>
+        <input id="li-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="li-pass">Password</label>
+        <input id="li-pass" type="password" autocomplete="current-password" placeholder="Your password" required>
+      </div>
+      <button class="pill pill-gold auth-submit" id="btn-login" type="submit">
+        <span class="spin" aria-hidden="true"></span><span class="label">Log in</span>
+      </button>
+      <button type="button" class="auth-link" id="link-forgot">Forgot your password?</button>
+      <p class="auth-switch">New here? <button type="button" id="goto-signup">Create an account</button></p>
+      <div class="form-status" id="login-status" role="status" aria-live="polite"></div>
+    </form>
+
+    <!-- SIGN UP -->
+    <form class="auth-form is-hidden" id="form-signup" novalidate>
+      <h1>Create your account</h1>
+      <p class="auth-sub">Save your details for faster checkout and order tracking.</p>
+      <div class="form-grid">
+        <div class="field">
+          <label for="su-name">Full name <span class="req">*</span></label>
+          <input id="su-name" type="text" autocomplete="name" placeholder="Your name" required>
+          <span class="err" id="err-su-name">Please enter your name.</span>
+        </div>
+        <div class="field">
+          <label for="su-phone">Phone <span class="req">*</span></label>
+          <input id="su-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="07…" required>
+          <span class="err" id="err-su-phone">Please enter a phone number.</span>
+        </div>
+        <div class="field full">
+          <label for="su-email">Email <span class="req">*</span></label>
+          <input id="su-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <span class="err" id="err-su-email">Please enter a valid email.</span>
+        </div>
+        <div class="field full">
+          <label for="su-pass">Password <span class="req">*</span> <span class="hint">(8+ characters)</span></label>
+          <input id="su-pass" type="password" autocomplete="new-password" placeholder="Create a password" required>
+          <span class="err" id="err-su-pass">Use at least 8 characters.</span>
+        </div>
+      </div>
+      <button class="pill pill-gold auth-submit" id="btn-signup" type="submit">
+        <span class="spin" aria-hidden="true"></span><span class="label">Create account</span>
+      </button>
+      <p class="auth-switch">Already have an account? <button type="button" id="goto-login">Log in</button></p>
+      <p class="auth-fine">By creating an account you agree to be contacted about your orders. Your password is encrypted — we never see it.</p>
+      <div class="form-status" id="signup-status" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+
+<div id="footer-mount"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/data.js?v=3"></script>
+<script src="../assets/app.js?v=3"></script>
+<script src="../assets/cart.js?v=3"></script>
+<script src="../assets/supa.js?v=3"></script>
+<script src="../assets/auth.js?v=3"></script>
+</body>
+</html>

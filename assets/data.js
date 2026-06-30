@@ -7,6 +7,16 @@ window.CONFIG = {
   /* Example: https://script.google.com/macros/s/AKfycb.../exec */
   bookingApi: 'https://script.google.com/macros/s/AKfycbwuQxtsI6yaCFoVPoN1G2tQRlmk8vwp8RCWFWfQICSkZCPAi88LfKOmsLsRI8yIxyvo/exec',
 
+  /* Supabase — powers customer + owner logins and dashboards.
+     Create a free project at supabase.com → Project Settings → API:
+       url     = "Project URL"        (e.g. https://abcd1234.supabase.co)
+       anonKey = "anon public" key    (safe to expose; Row Level Security protects data)
+     Then run supabase/schema.sql in the SQL Editor. */
+  supabase: {
+    url: 'REPLACE_WITH_YOUR_SUPABASE_PROJECT_URL',
+    anonKey: 'REPLACE_WITH_YOUR_SUPABASE_ANON_KEY',
+  },
+
   /* Site identity */
   brand: {
     name: 'Just Desserts',

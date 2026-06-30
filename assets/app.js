@@ -105,6 +105,7 @@
             <li><a class="${isActive('cookie-dough')}" href="${r('cookie-dough/')}">Cookie dough</a></li>
             <li><a class="${isActive('sundaes')}" href="${r('sundaes/')}">Sundaes</a></li>
             <li><a class="${isActive('visit')}" href="${r('#visit')}">Visit</a></li>
+            <li><a class="${isActive('auth')}" href="${r('auth/')}">Account</a></li>
           </ul>
           <button class="nav-cart" id="navCart" type="button" aria-label="View your order">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 12.3a1.5 1.5 0 0 0 1.5 1.2h8.2a1.5 1.5 0 0 0 1.5-1.2L22 7H6"/></svg>
@@ -124,6 +125,7 @@
         <a class="${isActive('menu')}" href="${r('menu/')}">All categories</a>
         ${CATEGORIES.map(c => `<a class="${isActive(c.id)}" href="${r(c.slug + '/')}">${html(c.title)}</a>`).join('')}
         <a class="${isActive('book')}" href="${r('book/')}">Checkout</a>
+        <a class="${isActive('auth')}" href="${r('auth/')}">My account</a>
       </div>
     `;
 
