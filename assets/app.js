@@ -28,6 +28,8 @@
         <button class="qbtn plus" type="button" aria-label="Add ${html(name)}">+</button>
       </div>`;
   }
+  const soldBadge = () => `<span class="sold-badge">Not available</span>`;
+  const trendBadge = () => `<span class="trend-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2c.5 3-1 5-2.5 6.5S8 12 8 14a4 4 0 0 0 8 0c0-1-.3-2-1-3 2 .5 4 2.5 4 6a7 7 0 1 1-14 0C5 12 9 9 11 6c1-1.5 2-2.5 2-4z"/></svg>Trending</span>`;
 
   /* Wire every stepper on the page (delegated) + keep them in sync with cart */
   function wireSteppers(){
@@ -35,6 +37,8 @@
       const btn = e.target.closest('.stepper .qbtn');
       if (!btn) return;
       const st = btn.closest('.stepper');
+      /* Ignore clicks on sold-out items */
+      if (st.closest('.sold-out')) return;
       const id = st.dataset.itemId;
       if (!window.Cart) return;
       if (btn.classList.contains('plus')) {
@@ -42,6 +46,35 @@
         else Cart.inc(id);
       } else {
         Cart.dec(id);
+      }
+    });
+  }
+
+  /* Out-of-stock: data.js `soldOut:true` flags are applied at render time.
+     The shop owner can ALSO mark items sold out (no code) via a "Stock" sheet
+     in Google Sheets — we fetch the list once per session and apply it here.
+     If the backend is unreachable, we silently fall back to the data.js flags. */
+  async function applyStock(){
+    let soldNames = [];
+    try {
+      const cached = sessionStorage.getItem('jd_stock');
+      if (cached !== null) {
+        soldNames = JSON.parse(cached);
+      } else {
+        const u = (CONFIG.bookingApi || '');
+        if (u && !u.startsWith('REPLACE_')) {
+          const res = await fetch(`${u}?action=stock`);
+          const data = await res.json();
+          soldNames = (data && data.soldOut) || [];
+          sessionStorage.setItem('jd_stock', JSON.stringify(soldNames));
+        }
+      }
+    } catch (e) { /* backend down — keep data.js flags only */ }
+    if (!soldNames.length) return;
+    const set = new Set(soldNames.map(s => String(s).toLowerCase().trim()));
+    document.querySelectorAll('.item .stepper[data-name], .fcard .stepper[data-name]').forEach(st => {
+      if (set.has(st.dataset.name.toLowerCase().trim())) {
+        st.closest('.item, .fcard')?.classList.add('sold-out');
       }
     });
   }
@@ -126,17 +159,19 @@
     f.outerHTML = FEATURED.map(item => {
       const cat = (item.href || '').replace(/\/+$/,'');     // 'waffles/' -> 'waffles'
       const id = itemId(cat, item.name);
+      const trending = item.rank <= 3;
       return `
-      <article class="fcard">
+      <article class="fcard${trending ? ' is-trending' : ''}${item.soldOut ? ' sold-out' : ''}">
         <a class="fcard-link" href="${r(item.href)}" aria-label="${html(item.name)}">
           <div class="fbg" style="background-image:url('${item.img}')"></div>
-          <span class="frank">#${item.rank} most liked</span>
+          ${trending ? trendBadge() : `<span class="frank">#${item.rank} most liked</span>`}
         </a>
         <div class="fbody">
           <h3>${html(item.name)}</h3>
           <div class="fbody-row">
             <div class="fprice">${html(item.price)}${item.rate ? ` <span class="frate">· ${html(item.rate)}</span>` : ''}</div>
             ${stepperHTML(id, item.name, item.price, cat)}
+            ${soldBadge()}
           </div>
         </div>
       </article>`;
@@ -207,7 +242,7 @@
               ${list.map(it => {
                 const id = itemId(CAT, it.name);
                 return `
-                <article class="item" data-item="${html(id)}">
+                <article class="item${it.soldOut ? ' sold-out' : ''}" data-item="${html(id)}">
                   <div class="item-top">
                     <h3 class="item-name">${html(it.name)}</h3>
                     <span class="item-price">${html(it.price)}</span>
@@ -220,6 +255,7 @@
                   ${it.desc ? `<p class="item-desc">${html(it.desc)}</p>` : ''}
                   <div class="item-foot">
                     ${stepperHTML(id, it.name, it.price, CAT)}
+                    ${soldBadge()}
                   </div>
                 </article>`;
               }).join('')}
@@ -314,6 +350,7 @@
     wireSteppers();
     syncSteppers();
     if (window.Cart) Cart.onChange(syncSteppers);
+    applyStock();
     /* Checkout page initialises itself if checkout.js is loaded */
   });
 })();

@@ -9,18 +9,31 @@ window.CONFIG = {
 
   /* Site identity */
   brand: {
-    name: 'Dessert House',
+    name: 'Just Desserts',
     place: 'Crayford',
-    monogram: 'DH',
-    phone: '+44 (0) 00 0000 0000',
-    phoneHref: 'tel:+440000000000',
-    email: 'hello@example.co.uk',
-    address: '[ Your Street Address ], Crayford, Kent, DA1 [postcode]',
+    monogram: 'JD',
+    phone: '01322 837820',
+    phoneHref: 'tel:+441322837820',
+    email: 'hello@justdessertscrayford.co.uk',
+    address: '66 Crayford High Street, Crayford, Kent, DA1 4EF',
   },
 
-  /* Booking constraints (matched in Apps Script) */
-  hours: { open: '3:00 pm', close: '11:00 pm', lastBooking: '10:30 pm' },
-  partySizes: [1,2,3,4,5,6,7,8],
+  /* Collection / delivery hours (display only) */
+  hours: { open: '3 pm', close: '11:30 pm', lastBooking: '11 pm' },
+
+  /* Delivery settings */
+  delivery: {
+    enabled: true,
+    fee: 2.50,          // flat delivery fee (£). Set 0 for free delivery.
+    minOrder: 10,       // minimum basket (£) before delivery is allowed
+    areaNote: 'We deliver within ~3 miles of Crayford. Out of range? Choose collection.',
+  },
+
+  /* Coupon codes — empty by default. Add your own, e.g.
+       coupons: { WELCOME10: { type:'percent', value:10, label:'10% off' },
+                  FIVEOFF:   { type:'amount',  value:5,  label:'£5 off' } }
+     Codes are matched case-insensitively. Unknown codes are rejected. */
+  coupons: {},
 };
 
 window.CATEGORIES = [

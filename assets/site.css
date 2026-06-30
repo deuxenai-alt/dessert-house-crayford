@@ -635,3 +635,114 @@ body.cart-locked{overflow:hidden}
 .co-receipt{max-width:380px;margin:26px auto 0;text-align:left;border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}
 .co-receipt .co-si.grand{border-top:1px solid var(--line);margin-top:8px;padding-top:12px;font-weight:700;color:var(--text)}
 .co-receipt .co-si.grand span:last-child{color:var(--gold)}
+
+/* =========================================================
+   PREMIUM GLOW HEADINGS
+   ========================================================= */
+.hero h1,.chero h1{text-shadow:0 0 42px rgba(242,204,76,.20),0 2px 30px rgba(0,0,0,.55)}
+.sec-head h2,.strip h2,.visit h2,.co-block-head h2,.cart-head h3,.co-summary h3{
+  text-shadow:0 0 26px rgba(242,204,76,.16);
+}
+.stop-flourish{text-shadow:0 0 30px rgba(242,204,76,.22)}
+/* the gold accent words gently breathe */
+.hero h1 em,.chero h1 em{
+  color:var(--gold);font-style:italic;
+  animation:glowPulse 3.4s ease-in-out infinite;
+}
+@keyframes glowPulse{
+  0%,100%{text-shadow:0 0 18px rgba(242,204,76,.25)}
+  50%{text-shadow:0 0 40px rgba(242,204,76,.65),0 0 70px rgba(242,204,76,.25)}
+}
+.item-name,.fcard h3,.co-line-name,.cart-line-name{text-shadow:0 0 18px rgba(242,204,76,.06)}
+
+/* =========================================================
+   TRENDING (top 3 featured) — animated
+   ========================================================= */
+.fcard.is-trending{
+  border-color:rgba(242,204,76,.5);
+  animation:floaty 5.5s ease-in-out infinite;
+  box-shadow:0 18px 50px -22px rgba(242,204,76,.45);
+}
+.fcard.is-trending:nth-of-type(2){animation-delay:.5s}
+.fcard.is-trending:nth-of-type(3){animation-delay:1s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.fcard.is-trending:hover{animation-play-state:paused}
+/* light sweep across trending cards */
+.fcard.is-trending .fcard-link::before{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.18) 48%,transparent 66%);
+  background-size:250% 100%;background-position:200% 0;
+  animation:sweep 4.5s ease-in-out infinite;
+}
+@keyframes sweep{0%{background-position:200% 0}60%,100%{background-position:-120% 0}}
+/* animated trending badge */
+.trend-badge{
+  position:absolute;top:14px;right:14px;z-index:4;
+  display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(180deg,#ff5a3c,#ff8a3c);color:#fff;
+  font-size:.6rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  padding:5px 9px;border-radius:var(--r-pill);
+  box-shadow:0 6px 18px -4px rgba(255,90,60,.7);
+  animation:badgePulse 1.8s ease-in-out infinite;
+}
+.trend-badge svg{width:11px;height:11px}
+@keyframes badgePulse{0%,100%{transform:scale(1);box-shadow:0 6px 18px -4px rgba(255,90,60,.7)}50%{transform:scale(1.07);box-shadow:0 8px 26px -2px rgba(255,90,60,.9)}}
+@media (prefers-reduced-motion:reduce){
+  .fcard.is-trending,.fcard.is-trending .fcard-link::before,.trend-badge,.hero h1 em,.chero h1 em{animation:none}
+}
+
+/* =========================================================
+   OUT OF STOCK
+   ========================================================= */
+.item.sold-out{opacity:.62;filter:grayscale(.35)}
+.item.sold-out .item-price{text-decoration:line-through;color:var(--muted)}
+.item .sold-badge,.fcard .sold-badge{display:none}
+.item.sold-out .stepper{display:none}
+.item.sold-out .sold-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,122,107,.1);border:1px solid rgba(255,122,107,.4);color:var(--danger);
+  font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 14px;border-radius:var(--r-pill);
+}
+.fcard.sold-out{opacity:.7;filter:grayscale(.3)}
+.fcard.sold-out .stepper{display:none}
+.fcard.sold-out .sold-badge{
+  display:inline-flex;align-items:center;
+  background:rgba(255,122,107,.1);border:1px solid rgba(255,122,107,.4);color:var(--danger);
+  font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 12px;border-radius:var(--r-pill);
+}
+
+/* =========================================================
+   CHECKOUT — fulfilment toggle, address, coupon
+   ========================================================= */
+.co-mode{display:inline-flex;background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:var(--r-pill);padding:5px;gap:5px;margin-bottom:6px}
+.co-mode button{
+  display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;background:transparent;color:var(--muted);
+  font-family:'Manrope',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.03em;
+  padding:10px 20px;border-radius:var(--r-pill);transition:background .25s,color .25s;
+}
+.co-mode button.active{background:var(--gold);color:var(--on-gold)}
+.co-mode button svg{width:16px;height:16px}
+.co-mode-note{font-size:.8rem;color:var(--muted);margin:10px 0 4px;line-height:1.5}
+.co-addr{margin-top:6px}
+.co-collect-note{font-size:.86rem;color:var(--muted-2);line-height:1.6;background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px;margin-top:6px}
+.co-coupon{display:flex;gap:8px;align-items:stretch;margin:4px 0 14px}
+.co-coupon input{
+  flex:1;min-width:0;background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--text);
+  border-radius:var(--r-md);padding:11px 14px;font-family:'Manrope',sans-serif;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;
+}
+.co-coupon input::placeholder{color:rgba(255,255,255,.3);letter-spacing:.04em;text-transform:none}
+.co-coupon input:focus{outline:none;border-color:var(--gold)}
+.co-coupon button{
+  flex:0 0 auto;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;
+  border-radius:var(--r-md);padding:0 18px;font-weight:600;font-size:.84rem;transition:background .2s,color .2s;
+}
+.co-coupon button:hover{background:var(--gold);color:var(--on-gold)}
+.co-coupon-msg{font-size:.82rem;line-height:1.4;margin:-6px 0 14px;min-height:1px}
+.co-coupon-msg.ok{color:var(--gold)}
+.co-coupon-msg.err{color:var(--danger)}
+.co-sum.fee span:last-child{color:var(--text)}
+.co-applied{display:inline-flex;align-items:center;gap:8px}
+.co-applied button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;line-height:1;padding:0}
+.co-applied button:hover{color:var(--danger)}

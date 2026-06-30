@@ -113,19 +113,19 @@ The email contains the full booking details + reference number. Reply to the cus
 ## Step 5 — Customise the site
 
 ### Brand & contact details
-Edit `assets/data.js` → `CONFIG.brand`:
+Edit `assets/data.js` → `CONFIG.brand` (already set to your real details):
 ```js
 brand: {
-  name: 'Dessert House',
+  name: 'Just Desserts',
   place: 'Crayford',
-  monogram: 'DH',
-  phone: '+44 (0) 00 0000 0000',
-  phoneHref: 'tel:+440000000000',
-  email: 'hello@example.co.uk',
-  address: 'Your street, Crayford, Kent, DA1 X',
+  monogram: 'JD',
+  phone: '01322 837820',
+  phoneHref: 'tel:+441322837820',
+  email: 'hello@justdessertscrayford.co.uk',
+  address: '66 Crayford High Street, Crayford, Kent, DA1 4EF',
 },
 ```
-These flow into the nav, footer, visit section and booking error messages automatically.
+These flow into the nav, footer, visit section and order emails automatically.
 
 ### Menu items
 Edit `assets/data.js` → `MENU.[category-slug]` arrays. Fields:
@@ -133,6 +133,38 @@ Edit `assets/data.js` → `MENU.[category-slug]` arrays. Fields:
 - `tag: 'new'` shows a gold "NEW" pill
 - `tag: 'pop'` shows a white "POPULAR" pill
 - `rate: '93% (120)'` shows a star rating
+- `soldOut: true` shows "Not available" and disables ordering (see below for the no-code way)
+
+### Mark an item out of stock — two ways
+1. **No code (recommended for staff):** in your Google Sheet, open the **Stock** tab and type the item's **exact name** (e.g. `Coke`) in column A. Save. It shows as "Not available" on the site within ~minutes (each visitor's first page load fetches the list). Delete the row to put it back in stock.
+2. **In code:** add `soldOut: true` to that item in `assets/data.js`.
+
+### Delivery & collection
+Edit `assets/data.js` → `CONFIG.delivery`:
+```js
+delivery: {
+  enabled: true,     // false = collection only (hides the toggle)
+  fee: 2.50,         // flat delivery fee (£); 0 = free
+  minOrder: 10,      // minimum basket (£) for delivery
+  areaNote: 'We deliver within ~3 miles of Crayford…',
+},
+```
+At checkout the customer picks **Delivery** (address + postcode required) or **Collection**.
+
+### Coupon codes
+Empty by default. Add codes in `assets/data.js` → `CONFIG.coupons`:
+```js
+coupons: {
+  WELCOME10: { type: 'percent', value: 10, label: '10% off your first order' },
+  FIVEOFF:   { type: 'amount',  value: 5,  label: '£5 off' },
+},
+```
+Codes are matched case-insensitively; anything not listed is rejected. The applied
+discount is recorded in the order's `Coupon` / `Coupon Disc` columns.
+
+### Cache-busting after edits
+The asset links use `?v=2` (e.g. `app.js?v=2`). After you change a JS/CSS file,
+bump every `?v=2` to `?v=3` so returning visitors get the new version. (One find-and-replace.)
 
 ### Add a category
 1. Add an entry to `CATEGORIES` in `data.js` (id, slug, title, hero image, tagline, description).
