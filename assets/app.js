@@ -2,6 +2,8 @@
    Shared render layer — runs on every page
    Reads data.js (CONFIG, CATEGORIES, MENU, FEATURED) and the page's
    data-page / data-category attributes to assemble the UI.
+   Every menu item is rendered with an Uber-style +/- quantity stepper
+   wired to window.Cart (cart.js).
    ========================================================= */
 (function(){
   const PAGE = document.body.dataset.page || 'home';
@@ -9,7 +11,48 @@
   const BASE = document.body.dataset.base || './';   // '..' on subpage, '.' on root
   const r = (p) => BASE.replace(/\/$/, '') + '/' + p.replace(/^\//, '');
 
-  const html = (s) => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const html = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  /* Stable id for the cart — category + item slug. Featured cards reuse this
+     exact formula so adding from the home page syncs with the category page. */
+  const itemId = (cat, name) => `${cat}__${slug(name)}`;
+
+  /* A reusable stepper. Empty state = a single round "+"; once qty>0 it
+     expands to  −  N  +  (Uber-style). data-* lets cart.js resync it. */
+  function stepperHTML(id, name, price, cat){
+    const qty = (window.Cart ? Cart.qtyOf(id) : 0);
+    return `
+      <div class="stepper${qty>0?' has-qty':''}" data-item-id="${html(id)}" data-name="${html(name)}" data-price="${html(price)}" data-cat="${html(cat)}">
+        <button class="qbtn minus" type="button" aria-label="Remove one ${html(name)}">−</button>
+        <span class="qval">${qty}</span>
+        <button class="qbtn plus" type="button" aria-label="Add ${html(name)}">+</button>
+      </div>`;
+  }
+
+  /* Wire every stepper on the page (delegated) + keep them in sync with cart */
+  function wireSteppers(){
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('.stepper .qbtn');
+      if (!btn) return;
+      const st = btn.closest('.stepper');
+      const id = st.dataset.itemId;
+      if (!window.Cart) return;
+      if (btn.classList.contains('plus')) {
+        if (Cart.qtyOf(id) === 0) Cart.add(id, st.dataset.name, st.dataset.price, st.dataset.cat);
+        else Cart.inc(id);
+      } else {
+        Cart.dec(id);
+      }
+    });
+  }
+  function syncSteppers(){
+    if (!window.Cart) return;
+    document.querySelectorAll('.stepper[data-item-id]').forEach(st => {
+      const qty = Cart.qtyOf(st.dataset.itemId);
+      st.classList.toggle('has-qty', qty > 0);
+      const v = st.querySelector('.qval'); if (v) v.textContent = qty;
+    });
+  }
 
   /* =================== NAV =================== */
   function renderNav(){
@@ -30,10 +73,11 @@
             <li><a class="${isActive('sundaes')}" href="${r('sundaes/')}">Sundaes</a></li>
             <li><a class="${isActive('visit')}" href="${r('#visit')}">Visit</a></li>
           </ul>
-          <a class="nav-cta" href="${r('book/')}">
-            Reserve
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+          <button class="nav-cart" id="navCart" type="button" aria-label="View your order">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.4 12.3a1.5 1.5 0 0 0 1.5 1.2h8.2a1.5 1.5 0 0 0 1.5-1.2L22 7H6"/></svg>
+            <span>Order</span>
+            <span class="nav-cart-count" id="navCartCount">0</span>
+          </button>
           <button class="nav-menu-btn" aria-label="Open menu" id="navMenuBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
           </button>
@@ -46,15 +90,15 @@
         <a class="${isActive('home')}" href="${r('')}">Home</a>
         <a class="${isActive('menu')}" href="${r('menu/')}">All categories</a>
         ${CATEGORIES.map(c => `<a class="${isActive(c.id)}" href="${r(c.slug + '/')}">${html(c.title)}</a>`).join('')}
-        <a class="${isActive('book')}" href="${r('book/')}">Reserve a table</a>
+        <a class="${isActive('book')}" href="${r('book/')}">Checkout</a>
       </div>
     `;
 
-    /* Drawer toggle + nav scroll background */
     const nav = document.getElementById('topNav');
     const drawer = document.getElementById('navDrawer');
     document.getElementById('navMenuBtn')?.addEventListener('click', () => drawer.classList.add('open'));
     document.getElementById('navDrawerClose')?.addEventListener('click', () => drawer.classList.remove('open'));
+    document.getElementById('navCart')?.addEventListener('click', () => { if (window.Cart) Cart.openDrawer(); });
     const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -75,20 +119,28 @@
     `;
   }
 
-  /* =================== HOME: HERO ETC =================== */
+  /* =================== HOME: FEATURED =================== */
   function renderHome(){
     const f = document.getElementById('featured-mount');
     if (!f) return;
-    f.outerHTML = FEATURED.map(item => `
-      <a class="fcard" href="${r(item.href)}">
-        <div class="fbg" style="background-image:url('${item.img}')"></div>
-        <span class="frank">#${item.rank} most liked</span>
+    f.outerHTML = FEATURED.map(item => {
+      const cat = (item.href || '').replace(/\/+$/,'');     // 'waffles/' -> 'waffles'
+      const id = itemId(cat, item.name);
+      return `
+      <article class="fcard">
+        <a class="fcard-link" href="${r(item.href)}" aria-label="${html(item.name)}">
+          <div class="fbg" style="background-image:url('${item.img}')"></div>
+          <span class="frank">#${item.rank} most liked</span>
+        </a>
         <div class="fbody">
           <h3>${html(item.name)}</h3>
-          <div class="fprice">${html(item.price)}${item.rate ? ` <span class="frate">· ${html(item.rate)}</span>` : ''}</div>
+          <div class="fbody-row">
+            <div class="fprice">${html(item.price)}${item.rate ? ` <span class="frate">· ${html(item.rate)}</span>` : ''}</div>
+            ${stepperHTML(id, item.name, item.price, cat)}
+          </div>
         </div>
-      </a>
-    `).join('');
+      </article>`;
+    }).join('');
   }
 
   /* =================== MENU: CATEGORY OVERVIEW =================== */
@@ -104,7 +156,7 @@
             <h3>${html(c.title)}</h3>
             <div class="cmeta">
               <span>${count} item${count===1?'':'s'}</span>
-              <span class="arr">View →</span>
+              <span class="arr">Order →</span>
             </div>
           </div>
         </a>`;
@@ -117,12 +169,10 @@
     const cat = CATEGORIES.find(c => c.id === CAT);
     if (!cat) return;
 
-    /* Set page metadata */
     document.title = `${cat.title} — ${CONFIG.brand.name} · ${CONFIG.brand.place}`;
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute('content', cat.description);
 
-    /* Hero */
     const hero = document.getElementById('chero-mount');
     if (hero) {
       hero.outerHTML = `
@@ -135,14 +185,13 @@
             <h1>${html(cat.title)} <em>—</em> ${html(cat.tagline)}</h1>
             <p class="chero-sub">${html(cat.description)}</p>
             <div class="chero-meta">
-              <span><b>Open now</b> · 3 pm – 11 pm</span>
+              <span><b>Collection</b> · 3 pm – 11 pm</span>
               <span><b>10% off</b> when you spend £20+</span>
             </div>
           </div>
         </section>`;
     }
 
-    /* Items */
     const items = document.getElementById('items-mount');
     if (items) {
       const list = MENU[CAT] || [];
@@ -150,14 +199,16 @@
         <section class="items-wrap">
           <div class="wrap">
             <div class="sec-head">
-              <p class="eyebrow center">The list</p>
+              <p class="eyebrow center">Order for collection</p>
               <h2><span class="stop-flourish">Every ${html(cat.title.toLowerCase())}</span></h2>
-              <p class="sec-sub">Tap any item name to read the description. Want to reserve a table to eat in? Use the Reserve button above.</p>
+              <p class="sec-sub">Tap <b style="color:var(--gold)">+</b> to add to your basket. Your order follows you across the menu — check out when you're ready.</p>
             </div>
             <div class="items">
-              ${list.map(it => `
-                <article class="item">
-                  <div class="item-row">
+              ${list.map(it => {
+                const id = itemId(CAT, it.name);
+                return `
+                <article class="item" data-item="${html(id)}">
+                  <div class="item-top">
                     <h3 class="item-name">${html(it.name)}</h3>
                     <span class="item-price">${html(it.price)}</span>
                   </div>
@@ -167,14 +218,16 @@
                     ${it.rate ? `<span class="rate">★ ${html(it.rate)}</span>` : ''}
                   </div>` : ''}
                   ${it.desc ? `<p class="item-desc">${html(it.desc)}</p>` : ''}
-                </article>
-              `).join('')}
+                  <div class="item-foot">
+                    ${stepperHTML(id, it.name, it.price, CAT)}
+                  </div>
+                </article>`;
+              }).join('')}
             </div>
           </div>
         </section>`;
     }
 
-    /* Related categories */
     const related = document.getElementById('related-mount');
     if (related) {
       const others = CATEGORIES.filter(c => c.id !== CAT).slice(0, 4);
@@ -183,7 +236,7 @@
           <div class="wrap">
             <div class="sec-head" style="padding-top:0">
               <p class="eyebrow center">More to try</p>
-              <h2><span class="stop-flourish">Browse other categories</span></h2>
+              <h2><span class="stop-flourish">Add something else</span></h2>
             </div>
             <div class="related-grid">
               ${others.map(c => `
@@ -208,7 +261,7 @@
     const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     mount.outerHTML = `
       <section class="strip" id="hours">
-        <p class="eyebrow center" style="display:inline-flex">Opening hours</p>
+        <p class="eyebrow center" style="display:inline-flex">Collection hours</p>
         <h2><span class="stop-flourish">Open every evening</span></h2>
         <div class="hours">
           ${days.map(d => `<div class="day">${d}</div><div class="time">3 pm – 11 pm</div>`).join('')}
@@ -224,7 +277,7 @@
         <div class="wrap">
           <p class="eyebrow center" style="display:inline-flex">Find us</p>
           <h2><span class="stop-flourish">In the heart of Crayford</span></h2>
-          <p class="vintro">Walk in, click &amp; collect, or order delivery. We're open every evening until 11.</p>
+          <p class="vintro">Order online for collection, or walk in. We're open every evening until 11.</p>
 
           <div class="visit-grid">
             <div class="vcard">
@@ -236,14 +289,14 @@
               <p><a href="${html(CONFIG.brand.phoneHref)}">${html(CONFIG.brand.phone)}</a><br><a href="mailto:${html(CONFIG.brand.email)}">${html(CONFIG.brand.email)}</a></p>
             </div>
             <div class="vcard">
-              <h4>Hours</h4>
-              <p>Every day<br>${html(CONFIG.hours.open)} – ${html(CONFIG.hours.close)}<br>Last booking ${html(CONFIG.hours.lastBooking)}</p>
+              <h4>Collection hours</h4>
+              <p>Every day<br>${html(CONFIG.hours.open)} – ${html(CONFIG.hours.close)}<br>Last order ${html(CONFIG.hours.lastBooking)}</p>
             </div>
           </div>
 
           <div class="hero-actions" style="margin-top:50px;justify-content:center">
-            <a class="pill pill-gold" href="${r('book/')}">Reserve a table</a>
-            <a class="pill pill-ghost" href="${r('menu/')}">View the menu</a>
+            <a class="pill pill-gold" href="${r('menu/')}">Start an order</a>
+            <a class="pill pill-ghost" href="${r('book/')}">Go to checkout</a>
           </div>
         </div>
       </section>`;
@@ -258,6 +311,9 @@
     renderHours();
     renderVisit();
     renderFooter();
-    /* Booking page initialises itself if booking.js is loaded */
+    wireSteppers();
+    syncSteppers();
+    if (window.Cart) Cart.onChange(syncSteppers);
+    /* Checkout page initialises itself if checkout.js is loaded */
   });
 })();

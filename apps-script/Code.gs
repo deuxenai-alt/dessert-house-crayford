@@ -1,42 +1,41 @@
 /**
- * Dessert House — Google Apps Script booking backend
+ * Dessert House — Google Apps Script TAKEAWAY ORDERING backend
  *
  * Paste this into your Google Sheet:
- *   Extensions → Apps Script → replace Code.gs with this file
+ *   Extensions → Apps Script → replace Code.gs with this whole file → Save
  *
  * Then deploy:
  *   Deploy → New deployment → Type: Web app
  *   - Execute as: Me
  *   - Who has access: Anyone
- *   - Copy the deployed Web App URL
+ *   - Copy the deployed Web App URL (ends in /exec)
  *   - Paste it into /assets/data.js → CONFIG.bookingApi
  *
- * Sheet schema (Apps Script creates the sheets on first run):
- *   - "Bookings": Ref | Created | Date | Time | Party | Name | Phone | Email | Notes | Status | Source
- *   - "Closed":   Date | Reason          (override days that are closed)
- *   - "Config":   Key | Value            (TABLES_PER_SLOT, SLOT_MINUTES, OPEN_HOUR, CLOSE_HOUR, LAST_BOOKING_OFFSET_MIN)
+ * Sheets (created automatically on first run):
+ *   - "Orders":  Ref | Created | Collection Date | Collection Time | Items |
+ *                Item Count | Subtotal | Discount | Total | Name | Phone |
+ *                Email | Notes | Status | Source
+ *   - "Closed":  Date | Reason            (days you're shut)
+ *   - "Config":  Key | Value              (settings below)
  */
 
-const SHEET_BOOKINGS = 'Bookings';
-const SHEET_CLOSED   = 'Closed';
-const SHEET_CONFIG   = 'Config';
+const SHEET_ORDERS = 'Orders';
+const SHEET_CLOSED = 'Closed';
+const SHEET_CONFIG = 'Config';
 
 const DEFAULT_CONFIG = {
-  TABLES_PER_SLOT: 5,           // max bookings per 30-min slot
-  SLOT_MINUTES: 30,
+  ORDERS_PER_SLOT: 8,           // max orders per collection time slot
+  SLOT_MINUTES: 30,             // collection slot length
   OPEN_HOUR: 15,                // 15 = 3pm
   CLOSE_HOUR: 23,               // 23 = 11pm
-  LAST_BOOKING_OFFSET_MIN: 30,  // last bookable slot 30 min before close (= 10:30pm)
-  MAX_PARTY: 8,                 // 9+ goes through phone confirmation
+  LAST_BOOKING_OFFSET_MIN: 30,  // last collection slot 30 min before close (10:30pm)
 };
 
 function doGet(e) {
   try {
     const action = (e && e.parameter && e.parameter.action) || '';
     if (action === 'availability') {
-      const date = e.parameter.date;
-      const party = e.parameter.party;
-      return json({ slots: getAvailability(date, party) });
+      return json({ slots: getAvailability(e.parameter.date) });
     }
     if (action === 'ping') return json({ ok: true, time: new Date().toISOString() });
     return json({ error: 'Unknown action' });
@@ -48,8 +47,8 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = parseBody(e);
-    if (body.action === 'book') {
-      return json(createBooking(body));
+    if (body.action === 'order' || body.action === 'book') {
+      return json(createOrder(body));
     }
     return json({ ok: false, error: 'Unknown action' });
   } catch (err) {
@@ -57,98 +56,107 @@ function doPost(e) {
   }
 }
 
-/* ============= AVAILABILITY ============= */
-function getAvailability(dateStr, party) {
+/* ============= COLLECTION SLOTS ============= */
+function getAvailability(dateStr) {
   if (!dateStr) throw new Error('Date is required.');
   const cfg = getConfig();
+  if (isClosed(dateStr)) return [];
 
-  /* Closed day? */
-  const closed = isClosed(dateStr);
-  if (closed) return [];
-
-  /* Pull all bookings for that date */
-  const sheet = getSheet(SHEET_BOOKINGS);
+  /* Count orders already placed for each collection time on that date */
+  const sheet = getSheet(SHEET_ORDERS);
   const rows = sheet.getDataRange().getValues();
   const header = rows.shift() || [];
   const idx = headerIndex(header);
   const countByTime = {};
   rows.forEach(r => {
-    if (!r[idx.Date] || !r[idx.Time]) return;
-    if ((r[idx.Status] || 'Confirmed').toString().toLowerCase() === 'cancelled') return;
-    const d = formatDate(r[idx.Date]);
-    if (d !== dateStr) return;
-    countByTime[r[idx.Time]] = (countByTime[r[idx.Time]] || 0) + 1;
+    if (!r[idx['Collection Date']] || !r[idx['Collection Time']]) return;
+    if ((r[idx.Status] || '').toString().toLowerCase() === 'cancelled') return;
+    if (formatDate(r[idx['Collection Date']]) !== dateStr) return;
+    const t = r[idx['Collection Time']];
+    countByTime[t] = (countByTime[t] || 0) + 1;
   });
 
-  /* Generate slots */
   const slots = [];
   const isToday = isSameDay(new Date(), new Date(dateStr + 'T00:00:00'));
   const now = new Date();
   const lastBookable = cfg.CLOSE_HOUR * 60 - cfg.LAST_BOOKING_OFFSET_MIN;
   for (let mins = cfg.OPEN_HOUR * 60; mins <= lastBookable; mins += cfg.SLOT_MINUTES) {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
+    const h = Math.floor(mins / 60), m = mins % 60;
     const time = formatTime(h, m);
-    /* Hide slots in the past for today */
+    /* Hide already-passed slots for same-day collection (+15 min lead time) */
     if (isToday && (h < now.getHours() || (h === now.getHours() && m <= now.getMinutes() + 15))) continue;
     const used = countByTime[time] || 0;
-    const left = Math.max(0, cfg.TABLES_PER_SLOT - used);
+    const left = Math.max(0, cfg.ORDERS_PER_SLOT - used);
     slots.push({ time: time, capacityLeft: left, full: left === 0 });
   }
   return slots;
 }
 
-/* ============= BOOKING ============= */
-function createBooking(b) {
-  /* Validate */
-  ['date','time','party_size','name','phone','email'].forEach(k => {
+/* ============= CREATE ORDER ============= */
+function createOrder(b) {
+  ['collection_date', 'collection_time', 'name', 'phone', 'email'].forEach(k => {
     if (!b[k]) throw new Error('Missing field: ' + k);
   });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email)) throw new Error('Invalid email.');
+  const items = Array.isArray(b.items) ? b.items : [];
+  if (items.length === 0) throw new Error('Your basket is empty.');
 
-  const cfg = getConfig();
-  if (isClosed(b.date)) throw new Error('We are closed on that date.');
+  if (isClosed(b.collection_date)) throw new Error('We are closed on that date.');
 
-  /* Re-check capacity (race safety) */
-  const slots = getAvailability(b.date, b.party_size);
-  const slot = slots.find(s => s.time === b.time);
-  if (!slot || slot.full) throw new Error('That time just filled up — please pick another.');
+  /* Re-check the slot still has capacity (prevents overbooking a time) */
+  const slots = getAvailability(b.collection_date);
+  const slot = slots.find(s => s.time === b.collection_time);
+  if (!slot || slot.full) throw new Error('That collection time just filled up — please pick another.');
 
-  /* Append row */
-  const sheet = getSheet(SHEET_BOOKINGS);
+  /* Human-readable item list for the sheet + email */
+  const itemsText = items.map(it =>
+    `${it.qty}× ${it.name} (${money(it.line != null ? it.line : (it.price || 0) * (it.qty || 1))})`
+  ).join('\n');
+
+  const sheet = getSheet(SHEET_ORDERS);
   const ref = generateRef();
   sheet.appendRow([
     ref,
     new Date(),
-    b.date,
-    b.time,
-    String(b.party_size),
+    b.collection_date,
+    b.collection_time,
+    itemsText,
+    Number(b.item_count || items.reduce((s, it) => s + (it.qty || 0), 0)),
+    Number(b.subtotal || 0),
+    Number(b.discount || 0),
+    Number(b.total || 0),
     String(b.name).slice(0, 80),
     String(b.phone).slice(0, 40),
     String(b.email).slice(0, 120),
     String(b.notes || '').slice(0, 500),
-    'Pending',
+    'New',
     String(b.source || 'web').slice(0, 40),
   ]);
 
-  /* Email the shop */
+  /* Email the shop the full order */
   try {
     const to = getConfigValue('NOTIFY_EMAIL') || Session.getEffectiveUser().getEmail();
     if (to) {
       MailApp.sendEmail({
         to: to,
-        subject: `New booking ${ref} — ${b.date} ${b.time}`,
+        subject: `New order ${ref} — collect ${b.collection_date} ${b.collection_time} — ${money(b.total)}`,
         body: [
-          `Reference: ${ref}`,
-          `When: ${b.date} at ${b.time}`,
-          `Party: ${b.party_size}`,
-          `Name: ${b.name}`,
+          `Order: ${ref}`,
+          `Collection: ${b.collection_date} at ${b.collection_time}`,
+          ``,
+          itemsText,
+          ``,
+          `Subtotal: ${money(b.subtotal)}`,
+          (Number(b.discount) > 0 ? `Discount: -${money(b.discount)}` : ''),
+          `TOTAL (pay on collection): ${money(b.total)}`,
+          ``,
+          `Name:  ${b.name}`,
           `Phone: ${b.phone}`,
           `Email: ${b.email}`,
           `Notes: ${b.notes || '—'}`,
           ``,
-          `Open the Bookings sheet to confirm.`,
-        ].join('\n'),
+          `Open the Orders sheet to mark it Confirmed when ready.`,
+        ].filter(String).join('\n'),
       });
     }
   } catch (err) { /* email is best-effort */ }
@@ -162,10 +170,10 @@ function getSheet(name) {
   let sh = ss.getSheetByName(name);
   if (sh) return sh;
   sh = ss.insertSheet(name);
-  if (name === SHEET_BOOKINGS) {
-    sh.appendRow(['Ref','Created','Date','Time','Party','Name','Phone','Email','Notes','Status','Source']);
+  if (name === SHEET_ORDERS) {
+    sh.appendRow(['Ref','Created','Collection Date','Collection Time','Items','Item Count','Subtotal','Discount','Total','Name','Phone','Email','Notes','Status','Source']);
     sh.setFrozenRows(1);
-    sh.getRange(1,1,1,11).setFontWeight('bold');
+    sh.getRange(1,1,1,15).setFontWeight('bold');
   } else if (name === SHEET_CLOSED) {
     sh.appendRow(['Date','Reason']);
     sh.setFrozenRows(1);
@@ -174,9 +182,8 @@ function getSheet(name) {
     sh.appendRow(['Key','Value']);
     sh.setFrozenRows(1);
     sh.getRange(1,1,1,2).setFontWeight('bold');
-    /* Seed defaults */
     Object.keys(DEFAULT_CONFIG).forEach(k => sh.appendRow([k, DEFAULT_CONFIG[k]]));
-    sh.appendRow(['NOTIFY_EMAIL', '']);  // optional — leave blank to use script owner's email
+    sh.appendRow(['NOTIFY_EMAIL', '']);  // blank = email the script owner
   }
   return sh;
 }
@@ -217,46 +224,45 @@ function isClosed(dateStr) {
 
 /* ============= UTILITIES ============= */
 function json(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function parseBody(e) {
   if (!e || !e.postData) return {};
-  const raw = e.postData.contents || '';
-  try { return JSON.parse(raw); }
+  try { return JSON.parse(e.postData.contents || ''); }
   catch (err) { return {}; }
 }
 
+function money(n) { return '£' + (Math.round(Number(n) * 100) / 100).toFixed(2); }
+
 function formatDate(d) {
   if (d instanceof Date) {
-    const pad = n => String(n).padStart(2,'0');
-    return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+    const pad = n => String(n).padStart(2, '0');
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   }
-  return String(d).slice(0,10);
+  return String(d).slice(0, 10);
 }
 
 function formatTime(h, m) {
   const ampm = h >= 12 ? 'pm' : 'am';
   const hh = h % 12 === 0 ? 12 : h % 12;
-  const mm = m === 0 ? '00' : String(m).padStart(2,'0');
+  const mm = m === 0 ? '00' : String(m).padStart(2, '0');
   return `${hh}:${mm} ${ampm}`;
 }
 
 function isSameDay(a, b) {
-  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function headerIndex(header) {
   const out = {};
-  header.forEach((h,i) => out[h] = i);
+  header.forEach((h, i) => out[h] = i);
   return out;
 }
 
 function generateRef() {
   const chars = 'ACDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
-  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random()*chars.length)];
+  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
   return 'DH-' + s;
 }

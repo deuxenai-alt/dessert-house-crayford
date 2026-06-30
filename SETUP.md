@@ -1,6 +1,6 @@
 # Dessert House — Setup
 
-A multi-page restaurant site with a Google Sheets-backed booking system. Hosts on GitHub Pages (free), bookings live in your Google Sheet (free), no monthly cost.
+A multi-page dessert shop with an **Uber Eats–style takeaway ordering system**: every item has a +/- quantity stepper, a live basket follows the customer across the menu, and orders land in your Google Sheet. Hosts on GitHub Pages (free), orders live in your Google Sheet (free), no monthly cost. Customers pay on collection.
 
 ---
 
@@ -18,12 +18,13 @@ dessert-shop/
 ├── cakes/
 ├── pot-of-fruits/
 ├── drinks/
-├── book/index.html         ← Reservation flow (3 steps)
+├── book/index.html         ← Checkout (basket → collection time → details)
 ├── assets/
 │   ├── site.css            ← Shared design system
-│   ├── data.js             ← Menu + brand + booking API URL
-│   ├── app.js              ← Nav / footer / page render
-│   └── booking.js          ← Availability + booking POST
+│   ├── data.js             ← Menu + brand + orders API URL
+│   ├── app.js              ← Nav / footer / page render + item steppers
+│   ├── cart.js             ← Basket state + floating bar + slide-in drawer
+│   └── checkout.js         ← Order review + collection time + order POST
 ├── apps-script/Code.gs     ← Paste into your Google Sheet (see below)
 └── SETUP.md                ← You're reading it
 ```
@@ -68,12 +69,13 @@ That's it — visit `/book/` and you'll see live availability.
 
 The Apps Script creates three sheets on first run:
 
-### `Bookings` sheet
-Every booking is appended here. Columns:
-`Ref | Created | Date | Time | Party | Name | Phone | Email | Notes | Status | Source`
+### `Orders` sheet
+Every order is appended here. Columns:
+`Ref | Created | Collection Date | Collection Time | Items | Item Count | Subtotal | Discount | Total | Name | Phone | Email | Notes | Status | Source`
 
-- **Status** starts as `Pending`. Change to `Confirmed` or `Cancelled` manually.
-- Set status to `Cancelled` to free that slot for new bookings.
+- **Items** is a readable list, e.g. `2× Oreo Waffle (£19.90)`.
+- **Status** starts as `New`. Change to `Confirmed`, `Ready`, `Collected`, or `Cancelled` as you go.
+- Set status to `Cancelled` to free that collection slot for new orders.
 
 ### `Closed` sheet
 Days you're not opening. Add a row per closed date:
@@ -81,16 +83,18 @@ Days you're not opening. Add a row per closed date:
 - **Reason**: optional note (e.g. "Christmas Day", "Private event")
 
 ### `Config` sheet
-Tweak booking behaviour without editing code:
+Tweak ordering behaviour without editing code:
 
 | Key | Default | What it does |
 |-----|---------|--------------|
-| `TABLES_PER_SLOT` | 5 | Max bookings per 30-min slot |
-| `SLOT_MINUTES` | 30 | Slot length (15, 30, or 60 work well) |
+| `ORDERS_PER_SLOT` | 8 | Max orders per 30-min collection slot |
+| `SLOT_MINUTES` | 30 | Collection slot length (15, 30, or 60 work well) |
 | `OPEN_HOUR` | 15 | 24h opening hour (15 = 3pm) |
 | `CLOSE_HOUR` | 23 | 24h closing hour (23 = 11pm) |
-| `LAST_BOOKING_OFFSET_MIN` | 30 | Last bookable slot before close |
-| `NOTIFY_EMAIL` | (blank) | Email address to notify per booking. Leave blank to use the script-owner's email. |
+| `LAST_BOOKING_OFFSET_MIN` | 30 | Last collection slot before close |
+| `NOTIFY_EMAIL` | (blank) | Email address to notify per order. Leave blank to use the script-owner's email. |
+
+> The **10% off £20+** discount is applied automatically in the basket and recorded in the `Discount` / `Total` columns.
 
 Change a value, save the sheet — the API picks it up on the next request. No redeploy needed.
 
