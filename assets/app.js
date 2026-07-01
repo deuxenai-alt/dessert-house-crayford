@@ -57,16 +57,22 @@
   async function applyStock(){
     let soldNames = [];
     try {
-      const cached = sessionStorage.getItem('jd_stock');
-      if (cached !== null) {
-        soldNames = JSON.parse(cached);
+      if (window.JD && JD.supaReady) {
+        /* Supabase Stock table (owner-managed, live) */
+        const { data } = await JD.supabase.from('stock').select('item_name,sold_out');
+        soldNames = (data || []).filter(r => r.sold_out).map(r => r.item_name);
       } else {
-        const u = (CONFIG.bookingApi || '');
-        if (u && !u.startsWith('REPLACE_')) {
-          const res = await fetch(`${u}?action=stock`);
-          const data = await res.json();
-          soldNames = (data && data.soldOut) || [];
-          sessionStorage.setItem('jd_stock', JSON.stringify(soldNames));
+        const cached = sessionStorage.getItem('jd_stock');
+        if (cached !== null) {
+          soldNames = JSON.parse(cached);
+        } else {
+          const u = (CONFIG.bookingApi || '');
+          if (u && !u.startsWith('REPLACE_')) {
+            const res = await fetch(`${u}?action=stock`);
+            const data = await res.json();
+            soldNames = (data && data.soldOut) || [];
+            sessionStorage.setItem('jd_stock', JSON.stringify(soldNames));
+          }
         }
       }
     } catch (e) { /* backend down — keep data.js flags only */ }

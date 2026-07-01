@@ -274,24 +274,33 @@
   }
 
   /* ---------- coupon ---------- */
-  function applyCoupon(){
+  async function applyCoupon(){
     const input = document.getElementById('co-coupon-input');
     const msg = document.getElementById('co-coupon-msg');
     const code = (input.value || '').trim();
     if (!code){ msg.className='co-coupon-msg err'; msg.textContent='Enter a code first.'; return; }
+
+    /* 1) check codes defined in data.js */
+    let found = null;
     const map = CONFIG.coupons || {};
     const key = Object.keys(map).find(k => k.toLowerCase() === code.toLowerCase());
-    if (!key){
-      msg.className='co-coupon-msg err';
-      msg.textContent='That code isn\'t valid.';
-      state.coupon = null;
-      return;
+    if (key) found = { code: key, type: map[key].type, value: Number(map[key].value), label: map[key].label || key };
+
+    /* 2) otherwise check the Supabase coupons table (owner-managed) */
+    if (!found && window.JD && JD.supaReady){
+      msg.className='co-coupon-msg'; msg.textContent='Checking…';
+      const { data } = await JD.supabase.from('coupons').select('*').ilike('code', code).eq('active', true).maybeSingle();
+      if (data) found = { code: data.code, type: data.type, value: Number(data.value), label: data.label || data.code };
     }
-    const c = map[key];
-    state.coupon = { code: key, type: c.type, value: Number(c.value), label: c.label || key };
+
+    if (!found){
+      msg.className='co-coupon-msg err'; msg.textContent="That code isn't valid.";
+      state.coupon = null; return;
+    }
+    state.coupon = found;
     render();
     const m2 = document.getElementById('co-coupon-msg');
-    if (m2){ m2.className='co-coupon-msg ok'; m2.textContent = `“${key}” applied — ${c.label || ''}`.trim(); }
+    if (m2){ m2.className='co-coupon-msg ok'; m2.textContent = `“${found.code}” applied — ${found.label || ''}`.trim(); }
   }
   function removeCoupon(){ state.coupon = null; render(); }
 
@@ -322,10 +331,24 @@
     });
   }
 
+  const SLOT_TIMES = ['3:00 pm','3:30 pm','4:00 pm','4:30 pm','5:00 pm','5:30 pm','6:00 pm','6:30 pm','7:00 pm','7:30 pm','8:00 pm','8:30 pm','9:00 pm','9:30 pm','10:00 pm','10:30 pm','11:00 pm'];
+  const PER_SLOT = 8;
+  function parseHour(t){ const m=t.match(/(\d+):(\d+)\s*(am|pm)/i); if(!m)return 0; let h=+m[1]%12; if(/pm/i.test(m[3]))h+=12; return h*60 + +m[2]; }
+
   async function fetchSlots(date){
+    /* Supabase-native availability (counts live orders per slot) */
+    if (window.JD && JD.supaReady){
+      const { data, error } = await JD.supabase.from('orders').select('slot_time,status').eq('slot_date', date);
+      if (error) throw new Error(error.message);
+      const used = {};
+      (data||[]).forEach(r => { if ((r.status||'')!=='Cancelled') used[r.slot_time]=(used[r.slot_time]||0)+1; });
+      const isToday = date === new Date().toISOString().slice(0,10);
+      const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+      return SLOT_TIMES.filter(t => !isToday || parseHour(t) > nowMin + 15)
+        .map(t => { const left = Math.max(0, PER_SLOT - (used[t]||0)); return { time:t, capacityLeft:left, full:left===0 }; });
+    }
     if (!configured()){
-      const times = ['3:00 pm','3:30 pm','4:00 pm','4:30 pm','5:00 pm','5:30 pm','6:00 pm','6:30 pm','7:00 pm','7:30 pm','8:00 pm','8:30 pm','9:00 pm','9:30 pm','10:00 pm','10:30 pm','11:00 pm'];
-      return times.map((t,i) => { const left=(i%6===0)?0:Math.max(1,8-(i%5)); return {time:t,capacityLeft:left,full:left===0}; });
+      return SLOT_TIMES.map((t,i) => { const left=(i%6===0)?0:Math.max(1,8-(i%5)); return {time:t,capacityLeft:left,full:left===0}; });
     }
     const res = await fetch(`${CONFIG.bookingApi}?action=availability&date=${encodeURIComponent(date)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -333,6 +356,8 @@
     if (data && data.error) throw new Error(data.error);
     return data.slots || [];
   }
+
+  function genRef(){ const c='ACDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)]; return 'JD-'+s; }
 
   /* ---------- validation ---------- */
   const validators = {
@@ -415,6 +440,25 @@
       business: state.business.trim(), business_address: state.businessAddr.trim(),
       notes: state.notes.trim(), source: 'web',
     };
+    /* Supabase-native order insert (so it appears in the dashboards) */
+    if (window.JD && JD.supaReady){
+      const u = await JD.getUser();
+      const ref = genRef();
+      const { error } = await JD.supabase.from('orders').insert({
+        ref, user_id: u ? u.id : null,
+        mode: state.mode, slot_date: state.date, slot_time: state.time,
+        items, item_count: Cart.count(),
+        subtotal: t.subtotal, discount: t.autoDisc,
+        coupon: state.coupon ? state.coupon.code : null, coupon_discount: t.couponDisc,
+        delivery_fee: t.fee, total: t.total,
+        name: state.name.trim(), phone: state.phone.trim(), email: state.email.trim(),
+        flat: state.flat.trim(), address: state.address.trim(), postcode: state.postcode.trim(),
+        business: state.business.trim(), business_address: state.businessAddr.trim(),
+        notes: state.notes.trim(), status: 'New',
+      });
+      if (error) throw new Error(error.message);
+      return { ok:true, ref };
+    }
     if (!configured()){
       await new Promise(r => setTimeout(r, 700));
       return { ok:true, ref:'DEMO-' + Math.random().toString(36).slice(2,8).toUpperCase() };
