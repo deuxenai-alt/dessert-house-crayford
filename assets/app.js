@@ -346,6 +346,35 @@
       </section>`;
   }
 
+  /* =================== SCROLL REVEAL =================== */
+  function initReveal(){
+    const targets = document.querySelectorAll('.fcard, .ccard, .ethos, .rcard, .vcard');
+    if (!targets.length) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+      targets.forEach(el => el.classList.add('reveal','is-in'));
+      return;
+    }
+    const groups = new Map(); // parent -> running index, for per-group stagger
+    targets.forEach(el => {
+      el.classList.add('reveal');
+      const parent = el.parentElement;
+      const i = groups.get(parent) || 0;
+      el.style.setProperty('--d', Math.min(i, 8) * 60 + 'ms');
+      groups.set(parent, i + 1);
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(el => io.observe(el));
+    /* safety net: never leave content invisible if the observer misbehaves */
+    setTimeout(() => targets.forEach(el => el.classList.add('is-in')), 2500);
+  }
+
   /* =================== KICKOFF =================== */
   document.addEventListener('DOMContentLoaded', () => {
     renderNav();
@@ -359,6 +388,7 @@
     syncSteppers();
     if (window.Cart) Cart.onChange(syncSteppers);
     applyStock();
+    initReveal();
     /* Checkout page initialises itself if checkout.js is loaded */
   });
 })();

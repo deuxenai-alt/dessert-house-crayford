@@ -1,6 +1,6 @@
 /* =========================================================
    Dessert House — shared design system
-   Black + gold editorial · Viaoda Libre + Manrope + Cinzel
+   Black + gold editorial · Viaoda Libre + Geist Sans + Cinzel
    ========================================================= */
 :root{
   --bg:#000000;
@@ -32,7 +32,7 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   background:var(--bg);color:var(--text);
-  font-family:'Manrope',system-ui,sans-serif;font-size:16px;line-height:1.6;font-weight:400;
+  font-family:'Geist Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;font-weight:400;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;
 }
 ::selection{background:var(--gold);color:var(--on-gold)}
@@ -115,7 +115,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 /* ============ Pill buttons ============ */
 .eyebrow{
   display:inline-flex;align-items:center;gap:12px;
-  font-family:'Manrope',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.34em;
+  font-family:'Geist Sans',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.34em;
   text-transform:uppercase;color:var(--gold);margin-bottom:20px;
 }
 .eyebrow::before{content:"";width:32px;height:1px;background:var(--gold)}
@@ -168,7 +168,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 }
 .hero-status{
   display:inline-flex;align-items:center;gap:10px;
-  font-family:'Manrope',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
+  font-family:'Geist Sans',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;
   color:rgba(255,255,255,.82);
   border:1px solid var(--line-2);border-radius:var(--r-pill);padding:9px 18px;margin-bottom:36px;
   background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
@@ -255,7 +255,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 .fcard .fbody{position:relative;z-index:2;padding:18px 20px 20px;display:flex;flex-direction:column;gap:12px}
 .fcard h3{font-family:'Viaoda Libre',serif;font-size:1.35rem;line-height:1.18;color:var(--text)}
 .fcard .fbody-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.fcard .fprice{font-family:'Manrope',sans-serif;color:var(--gold);font-weight:600;font-size:1rem;display:inline-flex;align-items:center;gap:8px}
+.fcard .fprice{font-family:'Geist Sans',sans-serif;color:var(--gold);font-weight:600;font-size:1rem;display:inline-flex;align-items:center;gap:8px}
 .fcard .frate{color:var(--muted);font-size:.74rem;font-weight:500}
 
 /* ============ Category overview (menu page) ============ */
@@ -289,7 +289,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 .item:hover{border-color:var(--line-2);background:rgba(255,255,255,.04);transform:translateY(-2px)}
 .item-row{display:flex;align-items:baseline;gap:14px;justify-content:space-between}
 .item-name{font-family:'Viaoda Libre',serif;font-size:1.2rem;line-height:1.25;color:var(--text);flex:1}
-.item-price{font-family:'Manrope',sans-serif;font-weight:600;color:var(--gold);font-size:.98rem;white-space:nowrap}
+.item-price{font-family:'Geist Sans',sans-serif;font-weight:600;color:var(--gold);font-size:.98rem;white-space:nowrap}
 .item-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .item-meta .tag{padding:4px 10px;border-radius:var(--r-pill);font-weight:700;font-size:.64rem;letter-spacing:.22em}
 .item-meta .tag.new{background:var(--gold-soft);color:var(--gold);border:1px solid rgba(242,204,76,.4)}
@@ -394,7 +394,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
   background:rgba(242,204,76,.04);
 }
 .summary-card h4{
-  font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.22em;
+  font-family:'Geist Sans',sans-serif;font-size:.74rem;font-weight:600;letter-spacing:.22em;
   text-transform:uppercase;color:var(--gold);margin-bottom:12px;
 }
 .summary-row{display:flex;gap:14px;align-items:baseline;padding:6px 0;font-size:.94rem}
@@ -447,7 +447,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 .hours div:nth-child(2n){text-align:right;color:var(--gold);font-weight:500}
 .hours div:nth-last-child(-n+2){border-bottom:0}
 .hours .day{color:rgba(255,255,255,.85);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem;text-align:left}
-.hours .time{font-family:'Manrope',sans-serif;font-size:.92rem;letter-spacing:.04em}
+.hours .time{font-family:'Geist Sans',sans-serif;font-size:.92rem;letter-spacing:.04em}
 
 /* ============ Visit ============ */
 .visit{padding:110px 0 90px;text-align:center;background:#000}
@@ -456,7 +456,7 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 .visit-grid{margin-top:50px;display:grid;grid-template-columns:1fr;gap:18px;text-align:left;max-width:var(--container-prose);margin-left:auto;margin-right:auto}
 @media(min-width:760px){.visit-grid{grid-template-columns:repeat(3,1fr);gap:22px}}
 .vcard{padding:28px;border:1px solid var(--line);border-radius:var(--r-2xl);background:rgba(255,255,255,.02)}
-.vcard h4{font-family:'Manrope',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.vcard h4{font-family:'Geist Sans',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .vcard p{color:rgba(255,255,255,.86);margin:0;font-size:.96rem;line-height:1.65}
 .vcard a{color:rgba(255,255,255,.86);transition:color .25s}
 .vcard a:hover{color:var(--gold)}
@@ -473,6 +473,57 @@ footer{border-top:1px solid var(--line);padding:38px 24px;background:#000}
   .hero-photo,.chero .hero-photo{animation:none}
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* =========================================================
+   MOTION POLISH — press feedback, scroll reveal, hero entrance
+   ========================================================= */
+a,button{touch-action:manipulation}
+
+/* press feedback on every tappable surface (100ms tap-feedback-speed) */
+.pill,.qbtn,.toggle,.dash-tab,.auth-tab,.nav-cta,.nav-menu-btn,.cart-close,.co-mode button,
+.stepper .qbtn,.oc-actions select,#navCart{
+  transition-property:transform,background,border-color,box-shadow,color;
+  transition-duration:.2s;transition-timing-function:cubic-bezier(.2,.8,.2,1);
+}
+.pill:active,.nav-cta:active,#navCart:active,.co-mode button:active,.dash-tab:active,.auth-tab:active{transform:scale(.96)}
+.qbtn:active,.toggle:active,.cart-close:active,.nav-menu-btn:active{transform:scale(.9)}
+
+/* cards lift on hover, settle on press (spatial continuity, no jitter) */
+.fcard,.ccard{transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s}
+.fcard:active,.ccard:active{transform:translateY(-1px) scale(.99)}
+.item{transition:background-color .25s}
+.item:hover{background:rgba(255,255,255,.015)}
+
+/* scroll reveal: fade + rise, staggered by JS via --d */
+.reveal{
+  opacity:0;transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.16,.8,.24,1),transform .7s cubic-bezier(.16,.8,.24,1);
+  transition-delay:var(--d,0ms);
+}
+.reveal.is-in{opacity:1;transform:translateY(0)}
+
+/* hero entrance: staggered fade-up on load, fixed delays (single fixed sequence) */
+.hero-status,.hero h1,.hero-sub,.hero-actions,.hero-meta{
+  animation:heroUp .8s cubic-bezier(.16,.8,.24,1) both;
+}
+.hero-status{animation-delay:.05s}
+.hero h1{animation-delay:.16s}
+.hero-sub{animation-delay:.3s}
+.hero-actions{animation-delay:.42s}
+.hero-meta{animation-delay:.54s}
+.chero .eyebrow,.chero h1,.chero-sub{animation:heroUp .8s cubic-bezier(.16,.8,.24,1) both}
+.chero .eyebrow{animation-delay:.05s}
+.chero h1{animation-delay:.16s}
+.chero-sub{animation-delay:.3s}
+@keyframes heroUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+
+/* checkout: address fields + coupon feedback animate in rather than pop */
+.co-addr{animation:coSlideIn .38s cubic-bezier(.16,.8,.24,1) both}
+.co-collect-note{animation:coFadeIn .3s ease both}
+@keyframes coSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes coFadeIn{from{opacity:0}to{opacity:1}}
+.co-coupon-msg.ok,.co-coupon-msg.err{animation:msgPop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes msgPop{from{opacity:0;transform:translateY(-4px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 /* =========================================================
    TAKEAWAY ORDERING — steppers, nav cart, floating bar, drawer, checkout
@@ -513,7 +564,7 @@ footer{border-top:1px solid var(--line);padding:38px 24px;background:#000}
   position:relative;display:inline-flex;align-items:center;gap:8px;
   padding:10px 18px;border-radius:var(--r-pill);cursor:pointer;
   background:var(--gold);color:var(--on-gold);border:none;
-  font-family:'Manrope',sans-serif;font-weight:600;font-size:.82rem;letter-spacing:.04em;
+  font-family:'Geist Sans',sans-serif;font-weight:600;font-size:.82rem;letter-spacing:.04em;
   box-shadow:0 10px 28px -10px rgba(242,204,76,.5);transition:background .25s,transform .2s;
 }
 .nav-cart:hover{background:var(--gold-2);transform:translateY(-1px)}
@@ -532,7 +583,7 @@ footer{border-top:1px solid var(--line);padding:38px 24px;background:#000}
   z-index:120;display:flex;align-items:center;gap:22px;
   padding:13px 16px 13px 20px;border-radius:var(--r-pill);cursor:pointer;border:none;
   background:var(--gold);color:var(--on-gold);
-  font-family:'Manrope',sans-serif;font-weight:600;font-size:.92rem;
+  font-family:'Geist Sans',sans-serif;font-weight:600;font-size:.92rem;
   box-shadow:0 20px 50px -12px rgba(0,0,0,.7),0 8px 24px -8px rgba(242,204,76,.5);
   opacity:0;pointer-events:none;transition:translate .4s cubic-bezier(.2,.8,.2,1),opacity .3s;
   min-width:min(440px,calc(100vw - 36px));justify-content:space-between;
@@ -719,7 +770,7 @@ body.cart-locked{overflow:hidden}
 .co-mode{display:inline-flex;background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:var(--r-pill);padding:5px;gap:5px;margin-bottom:6px}
 .co-mode button{
   display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;background:transparent;color:var(--muted);
-  font-family:'Manrope',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.03em;
+  font-family:'Geist Sans',sans-serif;font-weight:600;font-size:.86rem;letter-spacing:.03em;
   padding:10px 20px;border-radius:var(--r-pill);transition:background .25s,color .25s;
 }
 .co-mode button.active{background:var(--gold);color:var(--on-gold)}
@@ -730,7 +781,7 @@ body.cart-locked{overflow:hidden}
 .co-coupon{display:flex;gap:8px;align-items:stretch;margin:4px 0 14px}
 .co-coupon input{
   flex:1;min-width:0;background:rgba(255,255,255,.04);border:1px solid var(--line-2);color:var(--text);
-  border-radius:var(--r-md);padding:11px 14px;font-family:'Manrope',sans-serif;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;
+  border-radius:var(--r-md);padding:11px 14px;font-family:'Geist Sans',sans-serif;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;
 }
 .co-coupon input::placeholder{color:rgba(255,255,255,.3);letter-spacing:.04em;text-transform:none}
 .co-coupon input:focus{outline:none;border-color:var(--gold)}
@@ -755,7 +806,7 @@ body.cart-locked{overflow:hidden}
 .auth-brand{display:flex;justify-content:center;margin-bottom:22px;text-decoration:none}
 .auth-brand .mark{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:inline-flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:700;letter-spacing:.04em;font-size:1.1rem;box-shadow:0 0 30px rgba(242,204,76,.25)}
 .auth-tabs{display:flex;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:var(--r-pill);padding:5px;margin-bottom:26px}
-.auth-tab{flex:1;border:none;background:transparent;color:var(--muted);font-family:'Manrope',sans-serif;font-weight:600;font-size:.9rem;padding:11px;border-radius:var(--r-pill);cursor:pointer;transition:background .25s,color .25s}
+.auth-tab{flex:1;border:none;background:transparent;color:var(--muted);font-family:'Geist Sans',sans-serif;font-weight:600;font-size:.9rem;padding:11px;border-radius:var(--r-pill);cursor:pointer;transition:background .25s,color .25s}
 .auth-tab.is-active{background:var(--gold);color:var(--on-gold)}
 .auth-form.is-hidden{display:none}
 .auth-form h1{font-family:'Viaoda Libre',serif;font-size:1.9rem;color:var(--text);margin-bottom:6px;text-shadow:0 0 26px rgba(242,204,76,.16)}
