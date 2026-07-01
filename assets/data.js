@@ -7,14 +7,10 @@ window.CONFIG = {
   /* Example: https://script.google.com/macros/s/AKfycb.../exec */
   bookingApi: 'https://script.google.com/macros/s/AKfycbwuQxtsI6yaCFoVPoN1G2tQRlmk8vwp8RCWFWfQICSkZCPAi88LfKOmsLsRI8yIxyvo/exec',
 
-  /* Supabase — powers customer + owner logins and dashboards.
-     Create a free project at supabase.com → Project Settings → API:
-       url     = "Project URL"        (e.g. https://abcd1234.supabase.co)
-       anonKey = "anon public" key    (safe to expose; Row Level Security protects data)
-     Then run supabase/schema.sql in the SQL Editor. */
+  /* Supabase — powers customer + owner logins and dashboards. */
   supabase: {
-    url: 'REPLACE_WITH_YOUR_SUPABASE_PROJECT_URL',
-    anonKey: 'REPLACE_WITH_YOUR_SUPABASE_ANON_KEY',
+    url: 'https://arwivykkkuoloeewqsem.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyd2l2eWtra3VvbG9lZXdxc2VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NDIyMjksImV4cCI6MjA5ODQxODIyOX0.2TOIKv6B64NZOEP-K061BXa43c_jaRk9gsZ0wK5y0dg',
   },
 
   /* Site identity */
