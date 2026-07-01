@@ -89,7 +89,7 @@
       <div class="order-card">
         <div class="oc-top">
           <span class="oc-ref">${html(o.ref)} · ${statusBadgeHTML(o.status)}</span>
-          <span class="oc-when">${html(o.mode==='delivery'?'🚗 Delivery':'🛍️ Collection')} · ${html(o.slot_date)} ${html(o.slot_time)} · placed ${when}</span>
+          <span class="oc-when">${html(o.mode==='delivery'?'🚗 Delivery':'🛍️ Collection')} · placed ${when}</span>
         </div>
         <div class="oc-items">${items.map(it=>`${it.qty}× ${html(it.name)}`).join(' · ')||'—'}</div>
         <div class="oc-items" style="font-size:.82rem;margin-top:6px">

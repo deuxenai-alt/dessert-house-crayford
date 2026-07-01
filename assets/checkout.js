@@ -11,9 +11,10 @@
   const root = document.getElementById('book-root');
   const DEL = (CONFIG.delivery || { enabled:false, fee:0, minOrder:0, areaNote:'' });
 
+  const ETA_MIN = { delivery: 45, collection: 20 };
+
   const state = {
     mode: DEL.enabled ? 'delivery' : 'collection',
-    date:'', time:'',
     name:'', phone:'', email:'', notes:'',
     flat:'', address:'', postcode:'', business:'', businessAddr:'',
     coupon: null,            // { code, type, value, label }
@@ -22,9 +23,7 @@
 
   const pad = n => String(n).padStart(2,'0');
   const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const max = new Date(today); max.setDate(max.getDate() + 7);
-  const todayIso = isoDate(today), maxIso = isoDate(max);
+  const todayIso = isoDate(new Date());
   const html = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = (n) => Cart.money(n);
 
@@ -149,14 +148,13 @@
               </div>
             </div>
           </div>` : `
-          <p class="co-collect-note">Collect from <b style="color:var(--text)">${html(CONFIG.brand.name)}</b>, ${html(CONFIG.brand.address)}. We'll have it ready at your chosen time.</p>`}
+          <p class="co-collect-note">Collect from <b style="color:var(--text)">${html(CONFIG.brand.name)}</b>, ${html(CONFIG.brand.address)}.</p>`}
 
-        <div class="field" style="max-width:260px;margin-top:18px">
-          <label for="co-date">${isDel?'Delivery':'Collection'} date</label>
-          <input id="co-date" type="date" min="${todayIso}" max="${maxIso}" value="${state.date||todayIso}">
-        </div>
-        <div class="slots-wrap" id="co-slots">
-          <div class="slots-loading"><span class="spin" aria-hidden="true"></span><span>Checking times…</span></div>
+        <div class="co-eta">
+          <span class="co-eta-ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </span>
+          <span>No need to book a time — place your order now and ${isDel?'our driver will bring it to you':'we\'ll have it ready'} in about <b>${ETA_MIN[state.mode]} minutes</b>.</span>
         </div>
       </div>`;
   }
@@ -224,13 +222,8 @@
 
     /* mode toggle */
     root.querySelectorAll('.co-mode button').forEach(b => {
-      b.addEventListener('click', () => { captureFields(); state.mode = b.dataset.mode; state.time=''; render(); });
+      b.addEventListener('click', () => { captureFields(); state.mode = b.dataset.mode; render(); });
     });
-
-    /* collection/delivery date */
-    state.date = state.date || todayIso;
-    document.getElementById('co-date').addEventListener('change', (e) => { state.date = e.target.value || todayIso; state.time=''; loadSlots(); });
-    loadSlots();
 
     /* live field capture */
     bindField('name'); bindField('phone'); bindField('email'); bindField('notes');
@@ -304,59 +297,6 @@
   }
   function removeCoupon(){ state.coupon = null; render(); }
 
-  /* ---------- time slots ---------- */
-  async function loadSlots(){
-    const wrap = document.getElementById('co-slots');
-    if (!wrap) return;
-    wrap.innerHTML = `<div class="slots-loading"><span class="spin" aria-hidden="true"></span><span>Checking times…</span></div>`;
-    let slots;
-    try { slots = await fetchSlots(state.date); }
-    catch (err) {
-      wrap.innerHTML = `<div class="slots-empty"><b style="color:var(--text)">Couldn't load times.</b><br>${html(err.message||'Network error.')}<br><br>You can still place the order and we'll call to arrange, or ring us on <a href="${html(CONFIG.brand.phoneHref)}" style="color:var(--gold)">${html(CONFIG.brand.phone)}</a>.</div>`;
-      return;
-    }
-    if (!slots || slots.length === 0){ wrap.innerHTML = `<div class="slots-empty">No slots left for that day. Try another date.</div>`; return; }
-    wrap.innerHTML = `<div class="slots" role="radiogroup" aria-label="Times">${
-      slots.map(s => `
-        <button type="button" class="slot${s.full?' is-full':''}${state.time===s.time?' is-selected':''}" data-time="${html(s.time)}"${s.full?' disabled':''}>
-          ${html(s.time)}${s.full ? '<small>Full</small>' : `<small>${s.capacityLeft} left</small>`}
-        </button>`).join('')
-    }</div>`;
-    wrap.querySelectorAll('.slot:not(.is-full)').forEach(b => {
-      b.addEventListener('click', () => {
-        wrap.querySelectorAll('.slot').forEach(x => x.classList.remove('is-selected'));
-        b.classList.add('is-selected'); state.time = b.dataset.time;
-        wrap.classList.remove('co-needed');
-      });
-    });
-  }
-
-  const SLOT_TIMES = ['3:00 pm','3:30 pm','4:00 pm','4:30 pm','5:00 pm','5:30 pm','6:00 pm','6:30 pm','7:00 pm','7:30 pm','8:00 pm','8:30 pm','9:00 pm','9:30 pm','10:00 pm','10:30 pm','11:00 pm'];
-  const PER_SLOT = 8;
-  function parseHour(t){ const m=t.match(/(\d+):(\d+)\s*(am|pm)/i); if(!m)return 0; let h=+m[1]%12; if(/pm/i.test(m[3]))h+=12; return h*60 + +m[2]; }
-
-  async function fetchSlots(date){
-    /* Supabase-native availability (counts live orders per slot) */
-    if (window.JD && JD.supaReady){
-      const { data, error } = await JD.supabase.from('orders').select('slot_time,status').eq('slot_date', date);
-      if (error) throw new Error(error.message);
-      const used = {};
-      (data||[]).forEach(r => { if ((r.status||'')!=='Cancelled') used[r.slot_time]=(used[r.slot_time]||0)+1; });
-      const isToday = date === new Date().toISOString().slice(0,10);
-      const nowMin = new Date().getHours()*60 + new Date().getMinutes();
-      return SLOT_TIMES.filter(t => !isToday || parseHour(t) > nowMin + 15)
-        .map(t => { const left = Math.max(0, PER_SLOT - (used[t]||0)); return { time:t, capacityLeft:left, full:left===0 }; });
-    }
-    if (!configured()){
-      return SLOT_TIMES.map((t,i) => { const left=(i%6===0)?0:Math.max(1,8-(i%5)); return {time:t,capacityLeft:left,full:left===0}; });
-    }
-    const res = await fetch(`${CONFIG.bookingApi}?action=availability&date=${encodeURIComponent(date)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    if (data && data.error) throw new Error(data.error);
-    return data.slots || [];
-  }
-
   function genRef(){ const c='ACDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)]; return 'JD-'+s; }
 
   /* ---------- validation ---------- */
@@ -396,17 +336,7 @@
     if (state.mode==='delivery') need.push('flat','address','postcode');
     need.forEach(k => { const ok = validateField(k); if (!ok && !firstBad) firstBad = document.getElementById('co-'+k); });
 
-    if (!state.time){
-      document.getElementById('co-slots')?.classList.add('co-needed');
-      if (!firstBad){
-        status.className='form-status err';
-        status.innerHTML = `<b>Pick a ${state.mode==='delivery'?'delivery':'collection'} time</b> above to continue.`;
-        document.getElementById('co-slots')?.scrollIntoView({behavior:'smooth',block:'center'});
-        return;
-      }
-    }
     if (firstBad){ firstBad.focus(); firstBad.scrollIntoView({behavior:'smooth',block:'center'}); return; }
-    if (!state.time) return;
 
     const btn = document.getElementById('co-place');
     btn.classList.add('loading'); btn.disabled = true;
@@ -425,8 +355,7 @@
     const payload = {
       action: 'order',
       mode: state.mode,
-      collection_date: state.date,
-      collection_time: state.time,
+      eta_minutes: ETA_MIN[state.mode],
       items,
       item_count: Cart.count(),
       subtotal: t.subtotal,
@@ -446,7 +375,7 @@
       const ref = genRef();
       const { error } = await JD.supabase.from('orders').insert({
         ref, user_id: u ? u.id : null,
-        mode: state.mode, slot_date: state.date, slot_time: state.time,
+        mode: state.mode, slot_date: todayIso, slot_time: `ASAP (~${ETA_MIN[state.mode]} min)`,
         items, item_count: Cart.count(),
         subtotal: t.subtotal, discount: t.autoDisc,
         coupon: state.coupon ? state.coupon.code : null, coupon_discount: t.couponDisc,
@@ -475,14 +404,13 @@
   /* ---------- confirmation ---------- */
   function renderConfirmation(){
     const isDel = state.mode === 'delivery';
-    const pretty = state.date ? new Date(state.date+'T00:00:00').toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'}) : '';
     const lines = Cart.list();
     const t = computeTotals();
     root.innerHTML = `
       <div class="confirmation">
         <div class="check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 13l4 4L20 5"/></svg></div>
-        <h3>Order received.</h3>
-        <p>Thanks ${html(state.name.split(' ')[0]||'')}! Your order is set for <b style="color:var(--text)">${isDel?'delivery':'collection'}</b> on <b style="color:var(--text)">${html(pretty)}</b> at <b style="color:var(--text)">${html(state.time)}</b>. We'll text or call to confirm shortly.</p>
+        <h3>Order confirmed.</h3>
+        <p>Thanks ${html(state.name.split(' ')[0]||'')}! We're on it — <b style="color:var(--text)">${isDel?'out for delivery':'ready for collection'}</b> in around <b style="color:var(--text)">${ETA_MIN[state.mode]} minutes</b>. We'll text or call if anything changes.</p>
         <div class="ref">REF · ${html(state.ref)}</div>
         <div class="co-receipt">
           ${lines.map(it => `<div class="co-si"><span>${it.qty}× ${html(it.name)}</span><span>${money(it.price*it.qty)}</span></div>`).join('')}
