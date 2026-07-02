@@ -346,6 +346,25 @@
       </section>`;
   }
 
+  /* =================== SPOTLIGHT GLOW CARDS =================== */
+  function initGlowCards(){
+    const cards = document.querySelectorAll('[data-glow]');
+    if (!cards.length || matchMedia('(hover: none)').matches) return;
+    let raf = null, lastX = 0, lastY = 0;
+    function update(){
+      cards.forEach(card => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--glow-x', (lastX - r.left).toFixed(1));
+        card.style.setProperty('--glow-y', (lastY - r.top).toFixed(1));
+      });
+      raf = null;
+    }
+    document.addEventListener('pointermove', (e) => {
+      lastX = e.clientX; lastY = e.clientY;
+      if (!raf) raf = requestAnimationFrame(update);
+    });
+  }
+
   /* =================== SCROLL REVEAL =================== */
   function initReveal(){
     const targets = document.querySelectorAll('.fcard, .ccard, .ethos, .rcard, .vcard');
@@ -389,6 +408,7 @@
     if (window.Cart) Cart.onChange(syncSteppers);
     applyStock();
     initReveal();
+    initGlowCards();
     /* Checkout page initialises itself if checkout.js is loaded */
   });
 })();

@@ -220,9 +220,12 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 /* ============ Promise (3-col ethos) ============ */
 .promise{padding:120px 0 100px;background:linear-gradient(180deg, #000 0%, #050402 100%)}
 .promise-grid{display:grid;grid-template-columns:1fr;gap:18px;max-width:var(--container-prose);margin:0 auto}
-@media(min-width:780px){.promise-grid{grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-2xl);overflow:hidden;background:rgba(255,255,255,.015)}}
-.ethos{padding:36px 30px;text-align:center;position:relative}
-@media(min-width:780px){.ethos+.ethos{border-left:1px solid var(--line)}}
+@media(min-width:780px){.promise-grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+.ethos{
+  padding:36px 30px;text-align:center;position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--r-2xl);background:rgba(255,255,255,.015);
+  transition:border-color .4s;
+}
 .ethos .icon{
   width:54px;height:54px;border-radius:50%;border:1px solid var(--gold);
   display:inline-flex;align-items:center;justify-content:center;margin-bottom:22px;
@@ -231,6 +234,34 @@ nav.top.scrolled{background:rgba(0,0,0,.82)}
 .ethos .icon svg{width:24px;height:24px}
 .ethos h3{font-family:'Viaoda Libre',serif;font-size:1.6rem;color:var(--text);margin-bottom:12px}
 .ethos p{color:var(--muted-2);font-size:.94rem;line-height:1.7;max-width:34ch;margin:0 auto}
+
+/* ---- Spotlight glow cards: cursor-tracked border glow (vanilla port of GlowCard) ----
+   Coordinates are set per-card in LOCAL (offset) space by JS, not viewport space —
+   background-attachment:fixed would break here since scroll-reveal applies a transform,
+   and any transform on the element switches "fixed" backgrounds to act like "scroll". */
+[data-glow]{
+  --glow-x:-1000; --glow-y:-1000; --glow-size:260; --glow-border:2;
+  background-image:radial-gradient(
+    calc(var(--glow-size) * 1px) calc(var(--glow-size) * 1px) at calc(var(--glow-x) * 1px) calc(var(--glow-y) * 1px),
+    rgba(242,204,76,.12), transparent 70%
+  );
+}
+[data-glow]::before{
+  content:"";position:absolute;pointer-events:none;inset:calc(var(--glow-border) * -1px);
+  border:calc(var(--glow-border) * 1px) solid transparent;border-radius:inherit;
+  background-image:radial-gradient(
+    calc(var(--glow-size) * .7px) calc(var(--glow-size) * .7px) at calc(var(--glow-x) * 1px) calc(var(--glow-y) * 1px),
+    rgba(242,204,76,.95), transparent 70%
+  );
+  -webkit-mask:linear-gradient(#000,#000) padding-box, linear-gradient(#000,#000);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000,#000) padding-box, linear-gradient(#000,#000);
+  mask-composite:exclude;
+  opacity:0;transition:opacity .35s;
+}
+[data-glow]:hover::before{opacity:1}
+[data-glow]:hover{border-color:rgba(242,204,76,.4)}
+@media(hover:none){[data-glow]::before{display:none}}
 
 /* ============ Featured cards ============ */
 .featured{padding-bottom:120px;background:#000}
